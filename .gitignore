@@ -13,5 +13,8 @@ old-requirements.txt
 site.db
 
 *.pyc
+*.ipynb
+*.xlsx
+
 
 
