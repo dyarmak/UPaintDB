@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<h4>Add rooms to Project: {{ proj.name }}</h3>
+<h5>Areas limited to those at {{ site.code }}</h5>
+<!-- filterForm for area -->
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ filterForm.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                        {{ filterForm.areas.label(class="form-control-label") }}
+                        {% if filterForm.areas.errors %}
+                            {{ filterForm.areas(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in filterForm.areas.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ filterForm.areas(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+            </fieldset>
+            <div class="form-group">
+                {{ filterForm.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>    
+{% endblock content %}

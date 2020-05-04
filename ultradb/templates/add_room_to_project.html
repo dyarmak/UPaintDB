@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script src={{ url_for('static', filename='dist/jquery.bootstrap-duallistbox.min.js') }}></script>
+<link rel="stylesheet" type="text/css" href={{ url_for('static', filename='src/bootstrap-duallistbox.css') }}>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+
+<script src={{ url_for('static', filename="src/jquery.bootstrap-duallistbox.js") }}></script>
+
+
+<h4>Add rooms to Project: {{ proj.name }}</h4>
+<p>Rooms limited to those at <b>{{ site.code }}</b> within <b>{{ area.name }}</b></p>
+<!-- filterForm for area -->
+    <div class="content-section">
+        <form method="POST" action="" class='demo2'>
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
+                <div class="form-group">
+                    <p>Hold control and click to select multiple rooms</p>
+                    {{ form.room_list.label(class="form-control-label") }}
+                        {% if form.room_list.errors %}
+                            {{ form.room_list(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.room_list.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.room_list(size=15, class="demo2 form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+
+    </div>    
+          <script>
+            var demo2 = $('.demo2').bootstrapDualListbox({
+              nonSelectedListLabel: 'Non-selected',
+              selectedListLabel: 'Selected',
+              preserveSelectionOnMove: 'moved',
+              moveOnSelect: false,
+              nonSelectedFilter:''
+            });
+          </script>
+
+{% endblock content %}

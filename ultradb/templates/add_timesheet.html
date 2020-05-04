@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if tss != None %}
+<H5>Please review your hours below.</H5>
+    {% for ts in tss %}
+      {% if ts.hours >0 %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">   
+              <p>On {{ ts.dateOfWork.strftime('%A, %B %d, %Y') }} <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+
+            </div>
+            <p><b>You charged:</b> {{ ts.hours }} hours <b>@ Project:</b> {{ ts.project.first().name }}</p>
+            <p class="article-content"><b>Comment:</b> {{ ts.comment }}</p>
+          </div>
+        </article>
+
+        <!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Timesheet Entry?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_ts_entry', ts_id=ts.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      {% endif %}
+    {% endfor %}
+    <H5>Please review the hours above. If that is all your hours for that day, click the 'Complete Day' Button</H5>
+    <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('complete_day', date=dateLastEntry) }}">Complete Day</a>
+    <br>
+    <br>
+{% endif %}
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ user.fName }} please {{ legend }}</legend>
+
+            <div class="form-group">
+                {{ form.dateOfWork.label(class="form-control-label") }}
+                {% if form.dateOfWork.errors %}
+                    {{ form.dateOfWork(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.dateOfWork.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.dateOfWork(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                    {{ form.project_id.label(class="form-control-label") }}
+                    {% if form.project_id.errors %}
+                        {{ form.project_id(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.project_id.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.project_id(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            <div class="form-group">
+                {{ form.hours.label(class="form-control-label") }}
+                {% if form.hours.errors %}
+                    {{ form.hours(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.hours.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.hours(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.comment.label(class="form-control-label") }}
+                {% if form.comment.errors %}
+                    {{ form.comment(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.comment.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.comment(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-check">
+                {% if form.isNotWorkDay.errors %}
+                    {{ form.isNotWorkDay(class="form-check-input is-invalid") }}
+                    {{ form.isNotWorkDay.label(class="form-check-label") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.isNotWorkDay.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.isNotWorkDay(class="form-check-input") }}
+                    {{ form.isNotWorkDay.label(class="form-check-label") }}
+                {% endif %}
+            </div>
+
+            <div class="form-check">
+                {% if form.completed.errors %}
+                    {{ form.completed(class="form-check-input is-invalid") }}
+                    {{ form.completed.label(class="form-check-label") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.completed.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.completed(class="form-check-input") }}
+                    {{ form.completed.label(class="form-check-label") }}
+                {% endif %}
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

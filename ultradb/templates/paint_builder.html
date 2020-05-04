@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-group">
+                    {{ form.supplier.label(class="form-control-label") }} <a href="{{ url_for('add_supplier') }}">Add New Supplier</a>
+                    {% if form.supplier.errors %}
+                        {{ form.supplier(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.supplier.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.supplier(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            <div class="form-group">
+                {{ form.brand.label(class="form-control-label") }} <a href="{{ url_for('add_brand') }}">Add New Brand</a>
+                {% if form.brand.errors %}
+                    {{ form.brand(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.brand.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.brand(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.product.label(class="form-control-label") }} <a href="{{ url_for('add_product') }}">Add New Product</a>
+                {% if form.product.errors %}
+                    {{ form.product(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.product.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.product(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                    {{ form.sheen.label(class="form-control-label") }}
+                    {% if form.sheen.errors %}
+                        {{ form.sheen(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.sheen.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.sheen(class="form-control form-control-lg") }}
+                    {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.color.label(class="form-control-label") }} <a href="{{ url_for('add_color') }}">Add New Color</a>
+                {% if form.color.errors %}
+                    {{ form.color(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.color.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                        {% else %}
+                            {{ form.color(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.prod_code.label(class="form-control-label") }}
+                {% if form.prod_code.errors %}
+                    {{ form.prod_code(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                    {% for error in form.prod_code.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                        {{ form.prod_code(class="form-control form-control-lg") }}
+                    {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.base.label(class="form-control-label") }}
+                {% if form.base.errors %}
+                    {{ form.base(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.base.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                        {% else %}
+                            {{ form.base(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.formula.label(class="form-control-label") }}
+                {% if form.formula.errors %}
+                    {{ form.formula(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.formula.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                        {% else %}
+                            {{ form.formula(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+
+    <script>
+        let supplier_select = document.getElementById('supplier');
+        let brand_select = document.getElementById('brand');
+        let product_select = document.getElementById('product');
+        supplier_select.onchange = function(){
+            supplier = supplier_select.value;
+            fetch('/getbrands/' + supplier).then(function(response){
+                response.json().then(function(data){
+                    //Add set default if there is only one item in list.
+                    let optionHTML = '<option selected value="__None"></option>';
+                    
+                    for (let brand of data.brands) {
+                        optionHTML += '<option value="' + brand.id + '">' + brand.name + '</option>';
+                    }
+
+                    brand_select.innerHTML = optionHTML;
+                });
+            });
+
+        }
+
+        brand_select.onchange = function(){
+            brand = brand_select.value;
+            
+            fetch('/getproducts/' + brand).then(function(response){
+                response.json().then(function(data){
+                    let prodOptionHTML = '<option selected value="__None"></option>';
+                    for (let product of data.products) {
+                        prodOptionHTML += '<option value="' + product.id + '">' + product.name + '</option>';
+                    }
+
+                    product_select.innerHTML = prodOptionHTML;
+
+                });
+            });
+        }
+
+    </script>
+
+</div>
+{% endblock content %}

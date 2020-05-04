@@ -1,0 +1,10 @@
+{% extends "layout_nosidebar.html" %}
+{% block content %}
+<H3>"As Needed" BM IDs within {{site.name}}</H3>
+<br>
+<br>
+{% for table in tables %}
+            {{ table|safe }}
+{% endfor %}
+
+{% endblock content %}

@@ -1,0 +1,22 @@
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+class Config(object):
+    # UnComment top to run off local
+    SQLALCHEMY_DATABASE_URI = os.environ.get('LOCAL_POSTGRES_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'site.db') 
+ 
+    # Uncomment the lower part before uploading to Heroku
+    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')  
+        
+        # This is the local connection string 'postgresql://postgres:SQLftw99@localhost:5432/UPaintDB'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.environ.get('SECRET_KEY') or '5781628bb0b13ce0c686dfde281ba245'
+    # flask-Mail variables
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.environ.get('EMAIL_USER')
+    MAIL_PASSWORD = os.environ.get('EMAIL_PASS')

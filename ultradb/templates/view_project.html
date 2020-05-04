@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <H1>Project: {{ proj.name }}</H1>
+    {% if proj.work_order%}
+        <b>WO#:</b> {{ proj.work_order }}
+    {% endif %}
+    {% if proj.purchase_order%}
+        <b>PO#: </b>{{ proj.purchase_order}}
+    {% endif %}
+    <p><b>Located in:</b> {{ site.name }}</p>
+    <p><b>Status:</b> {{ status.name }}</p>
+    <p><b>Type:</b> {{ typeOfWork.name }}</p>
+    {% if proj.description %}
+        <p><b>Scope description:</b> {{ proj.description }}</p>
+    {% endif %}
+    <p><b>Started:</b> {{ proj.date_start }}</p>
+    {% if proj.target_end_date %}
+        <p><b>Target Completion:</b> {{ proj.target_end_date }}</p>
+    {% endif %}
+    {% if proj.date_finished %}
+        <p><b>Finished:</b> {{ proj.date_finished }}</p>
+    {% endif %}
+    <div>
+        {% if areas %}
+            <H4>List of Areas in Project: </H4>
+            {% for area in areas %}
+                <ul>{{ area.name }}</ul>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        {% if rooms %}
+            <H4>List of rooms in project:</H4>
+            {% for room in rooms %}
+                <ul><b>BMID:</b> {{ room.bm_id }} <b>Name:</b> {{ room.name }}</ul>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        <h4>Hours</h4>
+        <b>Project to date: </b>{{total_hours}} total hours.
+        <H5>Labour breakdown for this project</H5>
+        {% if tss %}
+            {% for ts in tss %}
+                <ul>{{ ts.dateOfWork.strftime('%B %d, %Y') }} <b>{{ ts.user.first().fName }}</b> worked {{ ts.hours }} hours</ul>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

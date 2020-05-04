@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>About Page</h1>
+    <p>This Web Application will allow a logged-in user to interact with a database.</p>
+    <p>The database is intended to store the following:</p>
+    <ul>
+        <li>Job Sites</li>
+        <li>Areas within a Site</li>
+        <li>Rooms within an Area</li>
+        <li>Job color sheets</li>
+        <li>Paint-Color combinations</li>
+        <li>pytesseract module for Optical Character Recognition to import from paint can lids</li>
+    </ul>
+    <p>Reports generated:</p>
+    <ul>
+        <li>Most recent areas touched</li>
+        <li>Areas touched within a specified date range</li>
+        <li>Upcoming areas due for scheduled maintenance</li>
+        <li>What color is room/area x?</li>
+    </ul>
+    <p>In the future, I would also like this to replace the project tracking excel sheet we currently use.</p>
+    <p>Forms for employees to enter their time into, applying it to specific projects.</p>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Areas within {{ site.name }}</h1>
+  <a class="mr-2" href="{{ url_for('add_area', cur_site_id=site.id) }}">Add a new area to {{ site.name }}</a>
+  <br>
+  <a class="mr-2" href="{{ url_for('upcoming', cur_site_id=site.id) }}">View list of upcoming rooms within {{ site.name }}</a>
+  <br>
+  <a class="mr-2" href="{{ url_for('as_needed', cur_site_id=site.id) }}">View list of as needed rooms within {{ site.name }}</a>
+    {% for area in areas %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h4 style="display: inline;">{{ area.name }}    </h4>
+              <!-- put area edit link here-->
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('update_area', cur_site_id=site.id ,cur_area_id=area.id) }}" style="float: right;">Update Area</a>
+              <br>
+              <a class="mr-2" href="{{ url_for('area_room_list', cur_site_id=site.id, cur_area_id=area.id) }}">Click here for a list of Rooms in {{ area.name }}</a>
+             
+            </div>
+            <p class="article-content">Located in {{ area.building }} building, level {{ area.level }}</p>
+            
+            <!--IF avail, display an image of color sheets for the area-->
+            <p>Color sheets: </p>
+            {% if area.color_sheets %}
+              {% for cs in area.color_sheets %}
+                <a href="{{ url_for('static', filename='area_color_sheets/' + cs.name) }}">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='area_color_sheets/' + cs.name) }}">
+                </a>
+              {% endfor %}
+            {% else %}
+              <a href="{{ url_for('static', filename='area_color_sheets/' + 'default_color_sheet.jpg') }}">
+              <img class="rounded-circle article-img" src="{{ url_for('static', filename='area_color_sheets/' + 'default_color_sheet.jpg') }}">
+              </a>  
+            {% endif %}
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

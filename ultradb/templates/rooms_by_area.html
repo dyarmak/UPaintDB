@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Rooms within {{ area.name }}</h1>
+  <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('update_area', cur_site_id=site.id ,cur_area_id=area.id) }}">Update Area</a>
+    {% for room in rooms %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <p class="text-info">BM_ID: {{ room.bm_id }}</p> 
+              <p>Room name: {{ room.name }} </p>
+            </div>
+            <p>Last Painted on: 
+              {% if room.date_last_paint is not none%}
+                {{ room.date_last_paint.date() }}
+              {% else %}
+                No data
+              {% endif %}
+            </p>
+            <p>Next Painting due: 
+                {% if room.date_next_paint is not none%}
+                  {{ room.date_next_paint.date() }}
+                {% else %}
+                  No data
+                {% endif %}
+            </p>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
