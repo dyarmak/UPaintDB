@@ -128,7 +128,7 @@ class ColorSheet(db.Model):
 # Defines a room within an area
 class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    bm_id = db.Column(db.String(20))
+    bm_id = db.Column(db.String(25))
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(50))
     description = db.Column(db.String(100))
