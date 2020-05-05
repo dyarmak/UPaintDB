@@ -2,8 +2,10 @@
 .vscode
 .aws
 .ipynb_checkpoints
-ultradb/static/area_color_sheets
 
+RefreshScripts
+HowTo
+OtherTesting
 DB Browser for SQLite.exe - Shortcut.lnk
 Todo.txt
 UPaintDB-ToDoFeb18.txt
