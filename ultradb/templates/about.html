@@ -1,23 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>About Page</h1>
-    <p>This Web Application will allow a logged-in user to interact with a database.</p>
-    <p>The database is intended to store the following:</p>
+    <p>This Web Application will allow a logged-in user to interact with the database. (Certain features are available without being logged in.)</p>
+    <p>The Web App provides an interface for viewing and updating information pertaining to:</p>
     <ul>
-        <li>Job Sites</li>
-        <li>Areas within a Site</li>
-        <li>Rooms within an Area</li>
-        <li>Job color sheets</li>
-        <li>Paint-Color combinations</li>
-        <li>pytesseract module for Optical Character Recognition to import from paint can lids</li>
+        <li>Job Sites with:</li>
+        <ul>
+            <li>List of Areas within a Site</li>
+            <li>List of Rooms within an Area</li>
+            <li>Any Colorsheets associated with an area</li>
+        </ul>
+        <li>Painting Projects, past, present and future with:</li>
+        <ul>
+            <li>Project details (location, dates, status, type, quote)</li>
+            <li>List of areas / rooms included in project scope</li>
+            <li>Labour breakdown for project</li>
+            
+        </ul>
+        <li>Employee Time Tracking. Logged in users can:</li>
+        <ul>
+            <li>Enter their time against a particular project</li>
+            <li>View a summary of their logged hours</li>
+        </ul>
     </ul>
-    <p>Reports generated:</p>
+    <h3>Report Generation</h3>
+    <p>The Web App can also generate reports:</p>
     <ul>
-        <li>Most recent areas touched</li>
-        <li>Areas touched within a specified date range</li>
-        <li>Upcoming areas due for scheduled maintenance</li>
-        <li>What color is room/area x?</li>
+        <li>List of rooms that are overdue for painting</li>
+        <li>List of rooms "As Needed" areas sorted by last painted date</li>
+
+        <li></li>
     </ul>
-    <p>In the future, I would also like this to replace the project tracking excel sheet we currently use.</p>
-    <p>Forms for employees to enter their time into, applying it to specific projects.</p>
+
+    <h3>Future Features:</h3>
+    <ul>
+        <li>Interface for updating date of last paint</li>
+        <ul>
+            <li>Alternatively, auto update date_last_paint for rooms in project upon completion</li>
+        </ul>
+        <li>Material Breakdown for project</li>
+        <li>List of areas / rooms painted, sorted by most recent</li>
+        <li>Areas touched within a specified filtered date range</li>
+        <li>Excel Report of all room data for chosen site</li>
+    </ul>
+
 {% endblock content %}

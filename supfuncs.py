@@ -1,8 +1,10 @@
 import datetime
-import sqlite3
+import psycopg2
+import os
 import pandas as pd
 import numpy as np
 from jinjasql import JinjaSql
+from sqlalchemy import create_engine
 nan = np.nan
 
 
@@ -10,8 +12,10 @@ def build_upcomingDF(site_id):
     """
     Create a Pandas DataFrame of the upcoming rooms within the select site_id
     """
-    conn = sqlite3.connect("site.db")
 
+    postgres_connection_URL = os.environ.get('DATABASE_URL')
+    engine = create_engine(postgres_connection_URL)
+    
     template = """SELECT *
     FROM room
     WHERE site_id = {{site_id}}
@@ -19,10 +23,10 @@ def build_upcomingDF(site_id):
     data = {
     "site_id": site_id
     }
-    j = JinjaSql(param_style='qmark')
+    j = JinjaSql()
     query, bind_params = j.prepare_query(template, data)
 
-    rooms = pd.read_sql(sql=query, con=conn, params=bind_params)
+    rooms = pd.read_sql(sql=query, con=engine, params=bind_params)
 
     # drop any rooms that have never been painted
     rooms = rooms.loc[~rooms.date_last_paint.isna()]
@@ -61,7 +65,8 @@ def build_asneededDF(site_id, area_id=None):
     Create a Pandas DataFrame of the as needed rooms within the select site_id
     """
 
-    conn = sqlite3.connect("site.db")
+    postgres_connection_URL = os.environ.get('DATABASE_URL')
+    engine = create_engine(postgres_connection_URL)
     
     # Potentially add an area filter as well?
     # if area_id:
@@ -78,11 +83,11 @@ def build_asneededDF(site_id, area_id=None):
     "site_id": site_id
     }
 
-    j = JinjaSql(param_style='qmark')
+    j = JinjaSql()
     query, bind_params = j.prepare_query(template, data)
     
     # Make DF of just as needed rooms for selected site.
-    as_neededDF = pd.read_sql(sql=query, con=conn, params=bind_params)
+    as_neededDF = pd.read_sql(sql=query, con=engine, params=bind_params)
     as_neededDF = as_neededDF[['bm_id', 'name', 'date_last_paint']].copy()
 
     # split dated from non-dated
