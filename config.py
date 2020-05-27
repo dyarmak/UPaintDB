@@ -2,6 +2,9 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# define the S3 bucket name for the color sheets
+colorSheetBucket = 'upaintdb-colorsheets'
+
 class Config(object):
     # UnComment top to run off local
     # SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:SQLftw99@localhost:5432/UPaintDB'
@@ -20,3 +23,5 @@ class Config(object):
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+
+    

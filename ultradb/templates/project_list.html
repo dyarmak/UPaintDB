@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
-<H5><a href="{{ url_for('new_project') }}">Add New Project</a></H5>
+<H5><a href="{{ url_for('project_bp.new_project') }}">Add New Project</a></H5>
     {% for project in projects %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{{ url_for('view_project', cur_proj_id=project.id) }}">{{ project.name }}</a>
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('update_project', cur_proj_id=project.id) }}" style="float: right;">Update Project</a>
+              <a class="mr-2" href="{{ url_for('project_bp.view_project', cur_proj_id=project.id) }}">{{ project.name }}</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('project_bp.update_project', cur_proj_id=project.id) }}" style="float: right;">Update Project</a>
             </div>
             <p class="article-content">{{ project.description }}</p>
           </div>

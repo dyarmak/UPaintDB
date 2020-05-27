@@ -6,7 +6,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">{{ legend }}</legend>
             <div class="form-group">
-                    {{ form.supplier.label(class="form-control-label") }} <a href="{{ url_for('add_supplier') }}">Add New Supplier</a>
+                    {{ form.supplier.label(class="form-control-label") }} <a href="{{ url_for('paint_bp.add_supplier') }}">Add New Supplier</a>
                     {% if form.supplier.errors %}
                         {{ form.supplier(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -20,7 +20,7 @@
                 </div>
 
             <div class="form-group">
-                {{ form.brand.label(class="form-control-label") }} <a href="{{ url_for('add_brand') }}">Add New Brand</a>
+                {{ form.brand.label(class="form-control-label") }} <a href="{{ url_for('paint_bp.add_brand') }}">Add New Brand</a>
                 {% if form.brand.errors %}
                     {{ form.brand(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -34,7 +34,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.product.label(class="form-control-label") }} <a href="{{ url_for('add_product') }}">Add New Product</a>
+                {{ form.product.label(class="form-control-label") }} <a href="{{ url_for('paint_bp.add_product') }}">Add New Product</a>
                 {% if form.product.errors %}
                     {{ form.product(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -62,7 +62,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.color.label(class="form-control-label") }} <a href="{{ url_for('add_color') }}">Add New Color</a>
+                {{ form.color.label(class="form-control-label") }} <a href="{{ url_for('paint_bp.add_color') }}">Add New Color</a>
                 {% if form.color.errors %}
                     {{ form.color(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">

@@ -28,7 +28,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <form action="{{ url_for('delete_ts_entry', ts_id=ts.id) }}" method="POST">
+          <form action="{{ url_for('timesheet_bp.delete_ts_entry', ts_id=ts.id) }}" method="POST">
             <input class="btn btn-danger" type="submit" value="Delete">
           </form>
         </div>
@@ -39,7 +39,7 @@
       {% endif %}
     {% endfor %}
     <H5>Please review the hours above. If that is all your hours for that day, click the 'Complete Day' Button</H5>
-    <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('complete_day', date=dateLastEntry) }}">Complete Day</a>
+    <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('timesheet_bp.complete_day', date=dateLastEntry) }}">Complete Day</a>
     <br>
     <br>
 {% endif %}

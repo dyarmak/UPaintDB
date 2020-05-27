@@ -4,7 +4,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{{ url_for('site_area_list', cur_site_id=site.id) }}">{{ site.name }}</a>
+              <a class="mr-2" href="{{ url_for('site_bp.site_area_list', cur_site_id=site.id) }}">{{ site.name }}</a>
             </div>
             <p class="article-content">Located at {{ site.addr_str }} in {{ site.city }}, B.C.</p>
           </div>
