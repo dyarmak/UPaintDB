@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for client in clients %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <p><b>{{ client.name }}</b></p>
+            </div>
+            {% if client.contactName|length > 0 %}
+            <p>Contact Name: {{ client.contactName }} 
+            {% endif %}
+            {% if client.contactEmail|length > 0 %}
+            <p>Contact Email: {{ client.contactEmail }}</p>
+            {% endif %}
+            {% if client.contactPhone|length > 0 %}
+            <p>Phone Number: {{ client.contactPhone }}</p>
+            {% endif %}
+        </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

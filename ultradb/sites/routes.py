@@ -1,8 +1,8 @@
 import os
 import os.path
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app
-from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, NewRoomForm
-from ultradb.models import Site, Area, Room, ColorSheet
+from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, NewRoomForm, NewClientForm
+from ultradb.models import Site, Area, Room, ColorSheet, Client
 from flask_login import login_required
 from s3funcs import upload_file, download_file
 from supfuncs import build_upcomingDF, build_asneededDF
@@ -11,6 +11,10 @@ from config import colorSheetBucket
 
 
 site_bp = Blueprint('site_bp', __name__)
+
+# ***************** #
+# ** View Routes **
+# ***************** #
 
 # View all sites
 @site_bp.route("/site")
@@ -56,10 +60,14 @@ def area_room_list(cur_site_id, cur_area_id):
     rooms = Room.query.filter_by(area_id=area.id).all()
     return render_template('rooms_by_area.html', title='Room List', rooms=rooms, area=area, site=site)
 
+@site_bp.route("/client")
+def client_list():
+    clients = Client.query.all()
+    return render_template('client_list.html', title="Client List", clients=clients)
 
-# ****************** #
-# Routes to Update
-# ****************** #
+# ******************* #
+# ** Update Routes **
+# ******************* #
 
 # Update area details; Use to Add a color sheet to an area
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/update", methods=['GET', 'POST'])
@@ -148,6 +156,19 @@ def as_needed(cur_site_id):
 # ************************************** #
 # Routes for adding a new ____
 # ************************************** #
+
+# Add new Client
+@site_bp.route("/client/new", methods=['GET', 'POST'])
+def new_client():
+    form = NewClientForm()
+    if form.validate_on_submit():
+        client = Client(name=form.name.data, contactName=form.contactName.data, contactEmail=form.contactEmail.data, contactPhone=form.contactPhone.data)
+        db.session.add(client)
+        db.session.commit()
+        flash('A new Client has been created!', 'success')
+        return redirect(url_for('site_bp.client_list'))
+    return render_template('new_client.html', title='Add New Client',
+                             form=form, legend='Add New Client')
 
 # Add new site
 @site_bp.route("/site/new", methods=['GET', 'POST'])

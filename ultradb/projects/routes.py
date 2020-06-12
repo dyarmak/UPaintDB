@@ -26,6 +26,7 @@ def new_project():
     form = NewProjectForm()
     if form.validate_on_submit():
         project = Project(name= form.name.data,
+                          client_id=form.client_id.data.id,
                           site_id=form.site_id.data.id, 
                           status_id=form.status_id.data.id, 
                           typeOfWork_id=form.typeOfWork_id.data.id, 

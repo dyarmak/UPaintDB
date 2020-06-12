@@ -61,6 +61,16 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
+# Define a Client, mostly just for job filtering puposes
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    contactName = db.Column(db.String(50))
+    contactEmail = db.Column(db.String(50), unique=True)
+    contactPhone = db.Column(db.String(50))
+    # billingAddress = db.Column(db.String(50))
+    
+
 # Defines a timesheet entry
 class Timesheet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -199,7 +209,7 @@ project_timesheet = db.Table('project_timesheet',
 # Defines a Project
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # client_id = relationship
+    client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     site_id = db.Column(db.Integer, db.ForeignKey('site.id'))
     area_list = db.relationship('Area', secondary=project_area, backref=db.backref('areas_in_project', lazy='dynamic'), lazy='dynamic') # Project can have many areas
     room_list = db.relationship('Room', secondary=project_room, backref=db.backref('rooms_in_project', lazy='dynamic'), lazy='dynamic') # Project can have many Rooms

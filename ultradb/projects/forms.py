@@ -3,7 +3,10 @@ from wtforms import StringField, SubmitField, FloatField
 from wtforms.fields.html5 import DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import DataRequired, Length, Optional
-from ultradb.models import Site, Area, Room, Status, Worktype
+from ultradb.models import Site, Area, Room, Status, Worktype, Client
+
+def client_query():
+    return Client.query
 
 def status_query():
     return Status.query
@@ -22,6 +25,7 @@ def room_query():
 
 class NewProjectForm(FlaskForm):
     name = StringField('Project Name', validators=[DataRequired()])
+    client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     site_id = QuerySelectField('Site of Project', query_factory=site_query, allow_blank=True, get_label='code', validators=[DataRequired()])
     status_id = QuerySelectField('Project Status', query_factory=status_query, allow_blank=False, get_label='name', validators=[DataRequired()])
     typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name', validators=[DataRequired()])
@@ -42,6 +46,7 @@ class NewProjectForm(FlaskForm):
 
 class UpdateProjectForm(FlaskForm):
     name = StringField('Project Name', validators=[DataRequired()])
+    client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     site_id = QuerySelectField('Site of Project', query_factory=site_query, allow_blank=False, get_label='code')
     status_id = QuerySelectField('Project Status', query_factory=status_query, allow_blank=False, get_label='name')
     typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name')
