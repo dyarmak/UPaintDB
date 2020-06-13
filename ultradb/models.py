@@ -35,7 +35,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     timesheets = db.relationship('Timesheet', secondary=user_timesheet, backref=db.backref('user', lazy='dynamic'), lazy='dynamic')
-    
+    isEmployed = db.Column(db.Boolean, default=True)
     # I need to define different user access profiles, which defines who can see what pages.
     # There is a flask add on for this (UserRole)
     # level 0 is admin and you see everything.
