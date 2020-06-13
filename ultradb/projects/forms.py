@@ -34,7 +34,7 @@ class NewProjectForm(FlaskForm):
     date_start = DateField('Start Date. Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[DataRequired()])
     date_finished = DateField('Actual End Date. Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[Optional()])
     target_end_date = DateField('Target End Date. Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[Optional()])
-    area_list = QuerySelectMultipleField(query_factory=area_query, get_label='name')
+    # area_list = QuerySelectMultipleField(query_factory=area_query, get_label='name')
     hours_estimate = FloatField('Number of man-hours to complete', validators=[Optional()])
     quote_amt = FloatField('If contract, Quoted amount', validators=[Optional()])
     invoice_amt = FloatField('If completed, Invoiced amount', validators=[Optional()])
@@ -52,7 +52,7 @@ class UpdateProjectForm(FlaskForm):
     typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name')
     description = StringField('Description of the Job / Scope', validators=[Length(max=250)])
     # Area and Rooms. I'm not yet sure how to deal with these...
-    area_list = QuerySelectMultipleField(query_factory=area_query, get_label='name')
+    # area_list = QuerySelectMultipleField(query_factory=area_query, get_label='name')
     # room_list = 
     # Dates should have some validators added!
     date_start = DateField('Start Date. Format in YYYY/MM/DD', validators=[DataRequired()], format='%Y-%m-%d')

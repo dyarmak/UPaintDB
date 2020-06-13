@@ -28,11 +28,11 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('main_bp.home') }}">Home</a>
               <a class="nav-item nav-link" href="{{ url_for('main_bp.about') }}">About</a>
-              <a class="nav-item nav-link" href="{{ url_for('site_bp.site_list') }}">Site List</a>
+              <a class="nav-item nav-link" href="{{ url_for('site_bp.site_list') }}">Sites</a>
               {% if current_user.is_authenticated %}
-                <a class="nav-item nav-link" href="{{ url_for('project_bp.project_list') }}">Project List</a>
+                <a class="nav-item nav-link" href="{{ url_for('site_bp.client_list') }}">Clients</a>
+                <a class="nav-item nav-link" href="{{ url_for('project_bp.project_list') }}">Projects</a>
                 <a class="nav-item nav-link" href="{{ url_for('timesheet_bp.view_timesheet') }}">View Timesheet</a>
                 <a class="nav-item nav-link" href="{{ url_for('timesheet_bp.add_timesheet') }}">Log Time</a>
               {% endif %}
@@ -74,10 +74,11 @@
               <p class='text-muted'>This whole section should change depending on what page you're on. IE it should be a separate html file.
                 <ul class="list-group">
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('project_bp.new_project') }}">Add a New Project</a></li>
+                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_client') }}">Add a New Client</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_site') }}">Add a New Site</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_area') }}">Add a New Area</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_room') }}">Add a New Room</a></li>
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('paint_bp.paint_builder') }}">Add a New Paint</a></li>
+                  
             {% else %}
                   <h5>Please log in for more options</h5>
             {% endif %}

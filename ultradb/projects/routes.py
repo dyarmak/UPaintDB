@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request
 from ultradb import db
 from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm
-from ultradb.models import Site, Area, Room, Project, Status, Worktype
+from ultradb.models import Site, Area, Room, Project, Status, Worktype, Client
 
 from flask_login import current_user, login_required
 from flask_mail import Message
@@ -34,7 +34,7 @@ def new_project():
                           date_start=form.date_start.data, 
                           target_end_date=form.target_end_date.data, 
                           hours_estimate= form.hours_estimate.data,
-                          area_list= form.area_list.data,
+                        #   area_list= form.area_list.data,
                           quote_amt=form.quote_amt.data, 
                           damage_comment=form.damage_comment.data, 
                           extenuating_circumstances=form.extenuating_circumstances.data)
@@ -51,11 +51,15 @@ def new_project():
 def view_project(cur_proj_id):
     # get basic project info to display
     proj = Project.query.get_or_404(cur_proj_id)
+    if proj.client_id != None:
+        client = Client.query.get(proj.client_id)
+    else:
+        client = None
     site = Site.query.get(proj.site_id)
     status = Status.query.get(proj.status_id)
     typeOfWork = Worktype.query.get(proj.typeOfWork_id)
     # Get list of areas in Project
-    areas = proj.area_list
+    # areas = proj.area_list
     # Get list of rooms in Project
     rooms = proj.room_list
     # get list of Timesheets for Project
@@ -66,8 +70,9 @@ def view_project(cur_proj_id):
         total_hours += ts.hours
 
     return render_template('view_project.html', title='Project Info', legend='Project Info', 
-                        proj=proj, site=site, status=status, typeOfWork=typeOfWork, areas=areas, 
-                        rooms=rooms, tss=tss, total_hours=total_hours)
+                        proj=proj, site=site, status=status, typeOfWork=typeOfWork, 
+                        # areas=areas, 
+                        client=client, rooms=rooms, tss=tss, total_hours=total_hours)
 
 
 # Update an existing Project, Add rooms and areas?
@@ -79,9 +84,10 @@ def update_project(cur_proj_id):
     site = Site.query.get(proj_site_id)
     form = UpdateProjectForm()  
     # This allows me to change the query and apply a filter to it for the page!
-    form.area_list.query = Area.query.filter_by(site_id=proj.site_id)
+    # form.area_list.query = Area.query.filter_by(site_id=proj.site_id)
     if form.validate_on_submit():
         proj.name = form.name.data 
+        proj.client_id = form.client_id.data.id
         proj.site_id = form.site_id.data.id
         proj.status_id = form.status_id.data.id
         proj.typeOfWork_id = form.typeOfWork_id.data.id
@@ -92,7 +98,7 @@ def update_project(cur_proj_id):
         proj.quote_amt = form.quote_amt.data
         proj.damage_comment = form.damage_comment.data
         proj.extenuating_circumstances = form.extenuating_circumstances.data
-        proj.area_list = form.area_list.data
+        # proj.area_list = form.area_list.data
         db.session.commit()
         flash('Project Updated Successfully!', 'success')
         return redirect(url_for('main_bp.home'))  
@@ -109,7 +115,7 @@ def update_project(cur_proj_id):
         form.damage_comment.data = proj.damage_comment
         form.extenuating_circumstances.data = proj.extenuating_circumstances
 
-        form.area_list.data = proj.area_list.filter_by(site_id=proj_site_id)
+        # form.area_list.data = proj.area_list.filter_by(site_id=proj_site_id)
     return render_template('update_project.html', title='Update Project', 
                             form=form, legend='Update Project', site=site, proj=proj)
 

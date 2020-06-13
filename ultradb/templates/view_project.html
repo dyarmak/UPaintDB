@@ -2,6 +2,9 @@
 {% block content %}
 <div class="content-section">
     <H1>Project: {{ proj.name }}</H1>
+    {% if client%}
+        <b>Client:</b> {{ client.name }}
+    {% endif %}    
     {% if proj.work_order%}
         <b>WO#:</b> {{ proj.work_order }}
     {% endif %}
