@@ -157,19 +157,21 @@ def add_room_to_project(cur_proj_id, selected_area_id):
     form.room_list.query = Room.query.filter_by(area_id=selected_area_id)
     rooms_in_proj = proj.room_list.all()
     if form.validate_on_submit(): # Add selected rooms to project_room table
-        # First check if the room is already in the list
-        # Iterate through rooms in form
-        for room in form.room_list.data:
-            if room not in rooms_in_proj:
-                proj.room_list.append(room)
-            
-            # Remove previous rooms
-            if room not in form.room_list.data :
+        
+        # Remove all rooms in selected area from proj.room_list
+        # Get rooms in this area
+        rooms_in_area = Room.query.filter_by(area_id=selected_area_id).all()
+        # iterate over these rooms
+        for room in rooms_in_area:
+            # if that room is assoc with proj, remove it
+            if room in proj.room_list:
                 proj.room_list.remove(room)
-            # IF form room is NOT in room, add it.
-            if room not in proj.room_list.all():
-                proj.room_list.append(room)
+        
+        # Then go through and add those that were selected.
+        for room in form.room_list.data:
+            proj.room_list.append(room)
         db.session.commit()
+        
         flash('Rooms added to Project', 'success')
         return redirect(url_for('project_bp.project_list'))
 

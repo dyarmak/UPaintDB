@@ -73,4 +73,4 @@ class AreaFilterForm(FlaskForm):
 
 class AddRoomToProjectForm(FlaskForm):
     room_list = QuerySelectMultipleField(query_factory=room_query, get_label='name')
-    submit = SubmitField('Add Rooms to Project')  
+    submit = SubmitField('Update Room List')  
