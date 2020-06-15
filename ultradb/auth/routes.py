@@ -1,28 +1,52 @@
 from flask import Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from ultradb.auth.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from ultradb.auth.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm
 from ultradb.models import User
 from flask import render_template, url_for, flash, redirect, request
 from ultradb import db, bcrypt
 
-from ultradb.auth.utils import save_thumbnail, send_reset_email
+from ultradb.auth.utils import save_thumbnail, send_reset_email, send_welcome_email
 
 auth_bp = Blueprint('auth_bp', __name__)
 
+# Test email route
+@auth_bp.route("/test")
+def test():
+
+    me = User.query.get(1)
+    send_welcome_email(me)
+
+    return redirect(url_for('main_bp.home'))
+
+# Admin Control Panel
+@login_required
+@auth_bp.route("/admin")
+def admincp():
+
+    # get list of users
+    users = User.query.all()
+
+    return render_template("admin_cp.html", title="Admin", users=users)
+
 # Register a new user
+@login_required
 @auth_bp.route("/register", methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main_bp.home'))
     form = RegistrationForm()
+    # We will set a temp password for the new user
+    defaultPass = "#Upa1ntDBT3mp$"
+
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        hashed_password = bcrypt.generate_password_hash(defaultPass).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password, fName=form.fName.data, lName=form.lName.data)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('auth_bp.login'))
-    return render_template('register.html', title='Register', form=form)
+        flash('Account has been created! They are now able to log in', 'success')
+        # Here we want to send an email letting them know their account has been created 
+        # And ask them to please reset their password on login
+        send_welcome_email(user)
+        return redirect(url_for('main_bp.home'))
+    return render_template('register.html', title='Register a new User', form=form)
 
 # Login with existing credentials
 @auth_bp.route("/login", methods=['GET', 'POST'])

@@ -1,0 +1,22 @@
+{% extends "layout_admin.html" %}
+{% block content %}
+
+<h1>Admin Control Panel</h1>
+<p>This page will allow you to:</p>
+<ul>
+    <li>control user access levels</li> 
+    <li>change employment status</li> 
+    <li>create new users</li>
+    <li>generate reports?</li>
+</ul>
+
+<p>I will slowly be adding these features over time</p>
+
+<h3>Users:</h3>
+{% for user in users %}
+<div>
+    <h5>{{ user.fName }} {{ user.lName }}, {{ user.email }}</h5>
+</div>
+{% endfor %}
+
+  {% endblock content %}

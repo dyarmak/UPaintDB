@@ -5,7 +5,7 @@ import os.path
 import secrets
 from ultradb import mail
 from flask_mail import Message
-from flask import current_app
+from flask import current_app, url_for
 from PIL import Image
 
 # Save profile thumbnail
@@ -33,5 +33,23 @@ def send_reset_email(user):
 {url_for('auth_bp.reset_token', token=token, _external=True)}
 
 If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
+
+# Welcome to UpaintDB email
+def send_welcome_email(user):
+    msg = Message('Welcome to UPaintDB', 
+                  sender='ultrapaintdb@gmail.com', 
+                  recipients=[user.email])
+    msg.body = f'''Welcome to UPaintDB! 
+
+You will need to use this site to submit your hours for payroll.
+
+To log in, please visit the following link to set your password:
+{url_for('auth_bp.reset_request', _external=True)}
+
+Thank you,
+UPaintDB
 '''
     mail.send(msg)

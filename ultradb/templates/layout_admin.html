@@ -74,10 +74,10 @@
                 <ul class="list-group">
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('project_bp.new_project') }}">Add a New Project</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_client') }}">Add a New Client</a></li>
+                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('auth_bp.register') }}">Add a New Employee</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_site') }}">Add a New Site</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_area') }}">Add a New Area</a></li>
                   <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_room') }}">Add a New Room</a></li>
-                  
             {% else %}
                   <h5>Please log in for more options</h5>
             {% endif %}
