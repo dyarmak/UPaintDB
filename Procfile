@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn ultradb:create_app()
+web: flask db upgrade; gunicorn "ultradb:create_app()"
