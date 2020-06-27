@@ -1,1 +1,1 @@
-web: gunicorn ultradb:app
+web: flask db upgrade; gunicorn ultradb:app

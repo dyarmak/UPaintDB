@@ -2,7 +2,7 @@ To upload my local PostgreSQL DB to HEROKU:
  
 Open command line
 
->heroku pg:reset -- app radiant-dusk-53993
+>heroku pg:reset --app radiant-dusk-53993
 
 confirm by typing in the name of app
 
