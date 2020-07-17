@@ -12,6 +12,7 @@ UPaintDB-ToDoFeb18.txt
 ultradb/__pycache__/
 old-requirements.txt
 HowToUpdate Heroku.txt
+Data Migrations.txt
 How to push localDB to Heroku.txt
 
 db_refresh.py

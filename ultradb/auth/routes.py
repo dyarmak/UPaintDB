@@ -9,19 +9,15 @@ from ultradb.auth.utils import save_thumbnail, send_reset_email, send_welcome_em
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-# Test email route
-@auth_bp.route("/test")
-def test():
-
-    me = User.query.get(1)
-    send_welcome_email(me)
-
-    return redirect(url_for('main_bp.home'))
-
 # Admin Control Panel
-@login_required
 @auth_bp.route("/admin")
+@login_required
 def admincp():
+
+
+    if current_user.AccessLevel != 7:
+        flash('You must be logged in as an Admin to Access this Page', 'info')
+        return redirect(url_for('main_bp.home'))
 
     # get list of users
     users = User.query.all()
@@ -29,8 +25,8 @@ def admincp():
     return render_template("admin_cp.html", title="Admin", users=users)
 
 # Register a new user
-@login_required
 @auth_bp.route("/register", methods=['GET', 'POST'])
+@login_required
 def register():
     form = RegistrationForm()
     # We will set a temp password for the new user

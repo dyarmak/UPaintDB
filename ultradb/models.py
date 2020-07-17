@@ -6,6 +6,7 @@ from flask_login import UserMixin
 from sqlalchemy import UniqueConstraint
 
 
+# Login Manager functions 
 @login_manager.user_loader
 def load_user(user_id):
     if user_id is not None:
@@ -36,12 +37,13 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
     timesheets = db.relationship('Timesheet', secondary=user_timesheet, backref=db.backref('user', lazy='dynamic'), lazy='dynamic')
     isEmployed = db.Column(db.Boolean, default=True)
+    access_level = db.Column(db.Integer, nullable=False, default=1)
     # I need to define different user access profiles, which defines who can see what pages.
     # There is a flask add on for this (UserRole)
-    # level 0 is admin and you see everything.
-    # level 1 is manager, you see everything
-    # level 2 is employee, you view but not update projects
-    # level 3 is outside user, no hours access. 
+    # level 7 is admin and you see everything.
+    # level 5 is manager, you see everything
+    # level 3 is employee, you view but not update projects
+    # level 1 is outside user, no hours access. 
     # access_profile = db.Column(db.Integer)
 
     def get_reset_token(self, expires_sec=1800):
@@ -60,6 +62,8 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+
 
 # Define a Client, mostly just for job filtering puposes
 class Client(db.Model):
