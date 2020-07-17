@@ -74,14 +74,24 @@ def add_timesheet():
             prevts = Timesheet.query.filter_by(user_id = user.id).filter_by(dateOfWork=dateLastEntry)
             
 
-        # If not then set it equal to the day after the most recent entry
+        # If no uncompleteDay, we check for the last entry.
         else:
             lastEntry = Timesheet.query.filter_by(user_id = user.id).filter_by(completed=True).order_by(desc(Timesheet.dateOfWork)).first() 
-            dateLastEntry = lastEntry.dateOfWork
-            dateCurrentEntry = dateLastEntry + timedelta(days=1)
-            form.dateOfWork.data = dateCurrentEntry
+            
+            #  If there is a lastEntry, we can set the form value to the day after the most recent entry
+            if lastEntry:
+                dateLastEntry = lastEntry.dateOfWork
+                formDateValue = dateLastEntry + timedelta(days=1)
+            
+            # in the event of a new hire, lastEntry will return None, so we will need to set the form value to today
+            else:
+                formDateValue = datetime.now().date()
+            
+            # now it is safe to set the form value. 
+            form.dateOfWork.data = formDateValue
+            
             # If dateCurrentEntry is a weekend, set workDay=False    
-            if (dateCurrentEntry.weekday() >= 5):
+            if (formDateValue.weekday() >= 5):
                 form.isNotWorkDay.data = True
 
     if form.validate_on_submit():
