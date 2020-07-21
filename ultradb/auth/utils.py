@@ -4,9 +4,12 @@ import os
 import os.path
 import secrets
 from ultradb import mail
+from ultradb.models import User
 from flask_mail import Message
 from flask import current_app, url_for
 from PIL import Image
+from flask import flash
+from flask_login import current_user
 
 # Save profile thumbnail
 def save_thumbnail(form_picture):
@@ -53,3 +56,38 @@ Thank you,
 UPaintDB
 '''
     mail.send(msg)
+
+
+def roleAuth(role):
+    """
+    Input: role name.
+    Options: Admin, Manager, Employee, User
+    
+    If current_user does not have permission, 
+    Flash custome message and redirect to home page. 
+    """
+
+    # Set level from input role name
+    if role == 'Admin':
+        level = 7
+    elif role == 'Manager':
+        level = 5
+    elif role == 'Employee':
+        level = 3
+    elif role == 'User':
+        level = 1
+    else:
+        level = 0
+
+    # Get the current users' access_level
+    user_level = current_user.access_level
+
+    # Check that the user is allowed to access the page.
+    if user_level < level:
+        # Set the flash message
+        msgDict = {3:"Employee or higher",5:"Manager or higher", 7:'Admin'}
+        msg = 'You must be logged in as an ' + msgDict[level] + ' to Access this Page'
+        flash(msg, 'info')
+        return False
+    else:
+        return True

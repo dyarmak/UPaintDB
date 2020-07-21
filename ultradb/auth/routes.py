@@ -1,22 +1,21 @@
 from flask import Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from ultradb.auth.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm
+from ultradb.auth.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 from ultradb.models import User
 from flask import render_template, url_for, flash, redirect, request
 from ultradb import db, bcrypt
 
-from ultradb.auth.utils import save_thumbnail, send_reset_email, send_welcome_email
+from ultradb.auth.utils import save_thumbnail, send_reset_email, send_welcome_email, roleAuth
 
 auth_bp = Blueprint('auth_bp', __name__)
+
 
 # Admin Control Panel
 @auth_bp.route("/admin")
 @login_required
 def admincp():
-
-
-    if current_user.AccessLevel != 7:
-        flash('You must be logged in as an Admin to Access this Page', 'info')
+    # Must be Admin
+    if not roleAuth('Admin'):
         return redirect(url_for('main_bp.home'))
 
     # get list of users
@@ -28,6 +27,10 @@ def admincp():
 @auth_bp.route("/register", methods=['GET', 'POST'])
 @login_required
 def register():
+    # Must be Admin
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
+
     form = RegistrationForm()
     # We will set a temp password for the new user
     defaultPass = "#Upa1ntDBT3mp$"

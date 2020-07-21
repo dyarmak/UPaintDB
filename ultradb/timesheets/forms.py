@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, FloatField
 from wtforms.fields.html5 import DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, ValidationError
 from ultradb.models import Project
 
 def project_query():

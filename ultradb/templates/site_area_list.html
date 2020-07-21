@@ -12,7 +12,7 @@
             <div class="article-metadata">
               <h4 style="display: inline;">{{ area.name }}    </h4>
               <!-- put area edit link here-->
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.update_area', cur_site_id=site.id ,cur_area_id=area.id) }}" style="float: right;">Update Area</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.area_update', cur_site_id=site.id ,cur_area_id=area.id) }}" style="float: right;">Update Area</a>
               <br>
               <a class="mr-2" href="{{ url_for('site_bp.area_room_list', cur_site_id=site.id, cur_area_id=area.id) }}">Click here for a list of Rooms in {{ area.name }}</a>
              

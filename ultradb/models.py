@@ -1,6 +1,7 @@
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, flash, redirect, url_for
+from sqlalchemy.orm import relationship
 from ultradb import db, login_manager
 from flask_login import UserMixin
 from sqlalchemy import UniqueConstraint
@@ -72,8 +73,21 @@ class Client(db.Model):
     contactName = db.Column(db.String(50))
     contactEmail = db.Column(db.String(50), unique=True)
     contactPhone = db.Column(db.String(50))
+
+    # clientcontacts = relationship('ClientContact')
+    # companyEmail = db.Column(db.String(50))
+
     # billingAddress = db.Column(db.String(50))
-    
+
+# Realizing that what we really want is a client contacts list
+#   
+# class ClientContact(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
+#     name = db.Column(db.String(50), unique=True, nullable=False)
+#     contactName = db.Column(db.String(50))
+#     contactEmail = db.Column(db.String(50), unique=True)
+#     contactPhone = db.Column(db.String(50))
 
 # Defines a timesheet entry
 class Timesheet(db.Model):
@@ -155,6 +169,8 @@ class Room(db.Model):
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(50))
     description = db.Column(db.String(100))
+    # Create a column called first_paint_date and give it the same values as date_last_paint
+    # date_last_paint will only store the date of the most recent paint job. 
     date_last_paint = db.Column(db.DateTime)
     freq = db.Column(db.Integer)
     date_next_paint = db.Column(db.DateTime)

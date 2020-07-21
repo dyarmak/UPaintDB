@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
   <h1>Rooms within {{ area.name }}</h1>
-  <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.update_area', cur_site_id=site.id ,cur_area_id=area.id) }}">Update Area</a>
+  <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.area_update', cur_site_id=site.id ,cur_area_id=area.id) }}">Update Area</a>
     {% for room in rooms %}
         <article class="media content-section">
           <div class="media-body">

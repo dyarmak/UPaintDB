@@ -103,48 +103,6 @@
             </div>
 
             <div class="form-group">
-                {{ form.target_end_date.label(class="form-control-label") }}
-                {% if form.target_end_date.errors %}
-                    {{ form.target_end_date(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.target_end_date.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.target_end_date(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{ form.hours_estimate.label(class="form-control-label") }}
-                {% if form.hours_estimate.errors %}
-                    {{ form.hours_estimate(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.hours_estimate.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.hours_estimate(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{ form.quote_amt.label(class="form-control-label") }}
-                {% if form.quote_amt.errors %}
-                    {{ form.quote_amt(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.quote_amt.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.quote_amt(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-            <div class="form-group">
                 {{ form.damage_comment.label(class="form-control-label") }}
                 {% if form.damage_comment.errors %}
                     {{ form.damage_comment(class="form-control form-control-lg is-invalid") }}
@@ -169,20 +127,6 @@
                     </div>
                 {% else %}
                     {{ form.extenuating_circumstances(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{ form.area_list.label(class="form-control-label") }}
-                {% if form.area_list.errors %}
-                    {{ form.area_list(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.area_list.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.area_list(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
 

@@ -23,6 +23,21 @@ def area_query():
 def room_query():
     return Room.query
 
+
+class NewProjectSimpleForm(FlaskForm):
+    name = StringField('Project Name', validators=[DataRequired()])
+    client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])
+    site_id = QuerySelectField('Site of Project', query_factory=site_query, allow_blank=True, get_label='code', validators=[DataRequired()])
+    status_id = QuerySelectField('Project Status', query_factory=status_query, allow_blank=False, get_label='name', validators=[DataRequired()])
+    typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name', validators=[DataRequired()])
+    description = StringField('Description of the Job / Scope', validators=[Length(max=250)])
+    # Dates should have some validators added!
+    date_start = DateField('Start Date. Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[DataRequired()])
+    damage_comment = StringField('Describe damage level', validators=[Length(max=500), Optional()])
+    extenuating_circumstances = StringField('Describe any extenuating circumstances', validators=[Length(max=500), Optional()])
+    submit = SubmitField('Create Project')  
+
+
 class NewProjectForm(FlaskForm):
     name = StringField('Project Name', validators=[DataRequired()])
     client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])

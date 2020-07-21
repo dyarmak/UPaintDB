@@ -30,6 +30,7 @@
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('main_bp.about') }}">About</a>
               <a class="nav-item nav-link" href="{{ url_for('site_bp.site_list') }}">Sites</a>
+
               {% if current_user.is_authenticated %}
                 <a class="nav-item nav-link" href="{{ url_for('site_bp.client_list') }}">Clients</a>
                 <a class="nav-item nav-link" href="{{ url_for('project_bp.project_list') }}">Projects</a>
@@ -68,16 +69,30 @@
         <!-- Floating right side Nav Bar-->
         <div class="col-md-4">
           <div class="content-section">
-            {% if current_user.is_authenticated %}
-              <h3>Add New Entries</h3>
-              <p class='text-muted'>This whole section should change depending on what page you're on. IE it should be a separate html file.
-                <ul class="list-group">
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('project_bp.new_project') }}">Add a New Project</a></li>
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_client') }}">Add a New Client</a></li>
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_site') }}">Add a New Site</a></li>
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_area') }}">Add a New Area</a></li>
-                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_room') }}">Add a New Room</a></li>
-                  
+            {% if current_user.access_level == 7 %}
+              <h3>Admin Panel</h3>
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('auth_bp.admincp') }}">View Admin Panel</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('project_bp.new_project') }}">Create a New Project</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_client') }}">Add a New Client</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_site') }}">Add a New Site</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_area') }}">Add a New Area</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_room') }}">Add a New Room</a></li>
+            {% elif current_user.access_level == 5 %}
+              <h3>Manager Panel</h3>
+              <ul class="list-group"></ul>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('project_bp.new_project_simple') }}">Create a New Project</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_site') }}">Add a New Site</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_area') }}">Add a New Area</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('site_bp.new_room') }}">Add a New Room</a></li>
+            {% elif current_user.access_level == 3 %}
+              <h3>Employee Panel</h3>
+              <ul class="list-group"></ul>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('timesheet_bp.add_timesheet') }}">Enter your Time</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{{ url_for('timesheet_bp.view_timesheet') }}">View your Timesheet</a></li>
+            {% elif current_user.access_level == 1 %}
+                <h3>User Panel</h3>
+                <p>Nothing here yet, check back soon!</p>
             {% else %}
                   <h5>Please log in for more options</h5>
             {% endif %}

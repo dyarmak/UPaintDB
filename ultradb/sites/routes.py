@@ -3,6 +3,7 @@ import os.path
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app
 from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, NewRoomForm, NewClientForm
 from ultradb.models import Site, Area, Room, ColorSheet, Client
+from ultradb.sites.utils import save_area_picture
 from flask_login import login_required
 from s3funcs import upload_file, download_file
 from supfuncs import build_upcomingDF, build_asneededDF
@@ -11,6 +12,14 @@ from config import colorSheetBucket
 
 
 site_bp = Blueprint('site_bp', __name__)
+
+
+
+@site_bp.route("/client")
+def client_list():
+    clients = Client.query.all()
+    return render_template('client_list.html', title="Client List", clients=clients)
+
 
 # ***************** #
 # ** View Routes **
@@ -50,7 +59,7 @@ def site_area_list(cur_site_id):
     # return to the starting dir
     os.chdir(startDir)
 
-    return render_template('areas_by_site.html', title='Area List', areas=areas, site=site)
+    return render_template('site_area_list.html', title='Area List', areas=areas, site=site)
 
 # View all Rooms in the chosen Area
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>")
@@ -60,10 +69,6 @@ def area_room_list(cur_site_id, cur_area_id):
     rooms = Room.query.filter_by(area_id=area.id).all()
     return render_template('rooms_by_area.html', title='Room List', rooms=rooms, area=area, site=site)
 
-@site_bp.route("/client")
-def client_list():
-    clients = Client.query.all()
-    return render_template('client_list.html', title="Client List", clients=clients)
 
 # ******************* #
 # ** Update Routes **
@@ -72,7 +77,7 @@ def client_list():
 # Update area details; Use to Add a color sheet to an area
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/update", methods=['GET', 'POST'])
 @login_required
-def update_area(cur_site_id, cur_area_id):
+def area_update(cur_site_id, cur_area_id):
     site = Site.query.get_or_404(cur_site_id) # Get current site_id from URL
     area = Area.query.get_or_404(cur_area_id) # Get current area_id
     form = UpdateAreaForm()
@@ -113,7 +118,7 @@ def update_area(cur_site_id, cur_area_id):
         form.descriptor.data = area.descriptor
     # add color_sheet so it displays?
     # color_sheet = url_for('static', filename='area_color_sheets/' + area.color_sheet)
-    return render_template('update_area.html', title='Update Area',
+    return render_template('area_update.html', title='Update Area',
                            form=form, legend='Update Area', site=site, area=area)
 
 # ************************** #
@@ -167,7 +172,7 @@ def new_client():
         db.session.commit()
         flash('A new Client has been created!', 'success')
         return redirect(url_for('site_bp.client_list'))
-    return render_template('new_client.html', title='Add New Client',
+    return render_template('client_new.html', title='Add New Client',
                              form=form, legend='Add New Client')
 
 # Add new site
@@ -180,7 +185,7 @@ def new_site():
         db.session.commit()
         flash('A new Site has been created!', 'success')
         return redirect(url_for('site_bp.site_list'))
-    return render_template('new_site.html', title='Add New Site',
+    return render_template('site_new.html', title='Add New Site',
                              form=form, legend='Add New Site')
 
 # Add a new Area
@@ -193,7 +198,7 @@ def new_area():
         db.session.commit()
         flash('New Area Added Successfully!', 'success')
         return redirect(url_for('main_bp.home'))   
-    return render_template('new_area.html', title='Add New Area', form=form, legend='Add a New Area')
+    return render_template('area_new.html', title='Add New Area', form=form, legend='Add a New Area')
 
 # Add new Area to the chosen Site
 @site_bp.route("/site/<int:cur_site_id>/new", methods=['GET', 'POST'])
@@ -223,4 +228,4 @@ def new_room():
         db.session.commit()
         flash('New Room Added Successfully!', 'success')
         return redirect(url_for('main_bp.home'))   
-    return render_template('new_room.html', title='Add New Room', form=form, legend='Add a New Room')
+    return render_template('room_new.html', title='Add New Room', form=form, legend='Add a New Room')

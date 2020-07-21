@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from ultradb.paints.forms import PaintColorBuilderForm, NewSupplierForm, NewBrandForm, NewProductForm, NewColorForm
 from ultradb.models import Area, Supplier, Brand, Product, Sheen, Paint, Color, PaintColor
+from ultradb import db
 
 
 paint_bp = Blueprint('paint_bp', __name__)
