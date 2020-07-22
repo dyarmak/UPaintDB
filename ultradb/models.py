@@ -238,8 +238,8 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     site_id = db.Column(db.Integer, db.ForeignKey('site.id'))
-    area_list = db.relationship('Area', secondary=project_area, backref=db.backref('areas_in_project', lazy='dynamic'), lazy='dynamic') # Project can have many areas
-    room_list = db.relationship('Room', secondary=project_room, backref=db.backref('rooms_in_project', lazy='dynamic'), lazy='dynamic') # Project can have many Rooms
+    area_list = db.relationship('Area', secondary=project_area, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Project can have many areas
+    room_list = db.relationship('Room', secondary=project_room, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Project can have many Rooms
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
     typeOfWork_id = db.Column(db.Integer, db.ForeignKey('worktype.id'))
     name = db.Column(db.String(50), nullable=False)
