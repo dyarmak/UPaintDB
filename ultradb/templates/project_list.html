@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if current_user.access_level == 7 %}
 <H5><a href="{{ url_for('project_bp.new_project') }}">Add New Project</a></H5>
+{% elif current_user.access_level == 5 %}
+<H5><a href="{{ url_for('project_bp.new_project_simple') }}">Add New Project</a></H5>
+{% endif %}
     {% for project in projects %}
         <article class="media content-section">
           <div class="media-body">
