@@ -9,15 +9,22 @@
               <p class="text-info">BM_ID: {{ room.bm_id }}</p> 
               <p>Room name: {{ room.name }} </p>
             </div>
-            <p>Last Painted on: 
+            <p>Most Recently Painted on: 
               {% if room.date_last_paint is not none%}
                 {{ room.date_last_paint.date() }}
               {% else %}
                 No data
               {% endif %}
             </p>
+            {% if room.projects.all() %}
+              {% set prjs = room.projects.all() %}
+              <H5>Painting History:</H5>
+              {% for prj in prjs %}
+                <p>Painted on {{ prj.date_finished.strftime('%Y-%m-%d') }} as part of '{{ prj.name }}'</p>
+              {% endfor %}
+            {% endif %}
             <p>Next Painting due: 
-                {% if room.date_next_paint is not none%}
+                {% if room.date_next_paint is not none %}
                   {{ room.date_next_paint.date() }}
                 {% else %}
                   No data
