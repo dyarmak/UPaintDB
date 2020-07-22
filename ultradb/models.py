@@ -73,11 +73,15 @@ class Client(db.Model):
     contactName = db.Column(db.String(50))
     contactEmail = db.Column(db.String(50), unique=True)
     contactPhone = db.Column(db.String(50))
-
+    projects = db.relationship('Project', backref='client', lazy=True)
     # clientcontacts = relationship('ClientContact')
     # companyEmail = db.Column(db.String(50))
 
     # billingAddress = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f"Client(id={self.id}, name='{self.name}')"
+
 
 # Realizing that what we really want is a client contacts list
 #   
@@ -169,9 +173,12 @@ class Room(db.Model):
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(50))
     description = db.Column(db.String(100))
-    # Create a column called first_paint_date and give it the same values as date_last_paint
+    # Create a column called orig_paint_date and give it the same values as date_last_paint
+    # need to do this in the migration script
+    orig_paint_date = db.Column(db.DateTime)
     # date_last_paint will only store the date of the most recent paint job. 
     date_last_paint = db.Column(db.DateTime)
+
     freq = db.Column(db.Integer)
     date_next_paint = db.Column(db.DateTime)
     site_id = db.Column(db.Integer, db.ForeignKey('site.id'),

@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, render_template, url_for, flash, redirect, request
 from ultradb import db
 from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm
@@ -7,7 +8,7 @@ from flask_login import current_user, login_required
 from flask_mail import Message
 
 from ultradb.auth.utils import roleAuth
-
+from ultradb.projects.utils import check_status_change
 
 project_bp = Blueprint('project_bp', __name__)
 
@@ -121,6 +122,7 @@ def update_project(cur_proj_id):
     proj = Project.query.get_or_404(cur_proj_id)
     proj_site_id = proj.site_id
     site = Site.query.get(proj_site_id)
+    orig_status = proj.status_id
     form = UpdateProjectForm()  
     # This allows me to change the query and apply a filter to it for the page!
     # form.area_list.query = Area.query.filter_by(site_id=proj.site_id)
@@ -138,11 +140,17 @@ def update_project(cur_proj_id):
         proj.damage_comment = form.damage_comment.data
         proj.extenuating_circumstances = form.extenuating_circumstances.data
         # proj.area_list = form.area_list.data
+        
+        # Check if the project status has been changed and update accordingly
+        check_status_change(proj, orig_status)
+
+        # commit changes
         db.session.commit()
         flash('Project Updated Successfully!', 'success')
         return redirect(url_for('main_bp.home'))  
     elif request.method == 'GET':
         form.name.data = proj.name
+        form.client_id.data = Client.query.get(proj.client_id)
         form.site_id.data = Site.query.get(proj.site_id)
         form.status_id.data = Status.query.get(proj.status.id)
         form.typeOfWork_id.data = Worktype.query.get(proj.typeOfWork_id)
@@ -170,6 +178,7 @@ def update_project_simple(cur_proj_id):
 
 
     proj = Project.query.get_or_404(cur_proj_id)
+    orig_status = proj.status_id
     proj_site_id = proj.site_id
     site = Site.query.get(proj_site_id)
     form = UpdateProjectForm()  
@@ -186,11 +195,16 @@ def update_project_simple(cur_proj_id):
         proj.damage_comment = form.damage_comment.data
         proj.extenuating_circumstances = form.extenuating_circumstances.data
         # proj.area_list = form.area_list.data
+
+        # Check if the project status has been changed and update accordingly
+        check_status_change(proj, orig_status)
+
         db.session.commit()
         flash('Project Updated Successfully!', 'success')
         return redirect(url_for('main_bp.home'))  
     elif request.method == 'GET':
         form.name.data = proj.name
+        form.client_id.data = Client.query.get(proj.client_id)
         form.site_id.data = Site.query.get(proj.site_id)
         form.status_id.data = Status.query.get(proj.status.id)
         form.typeOfWork_id.data = Worktype.query.get(proj.typeOfWork_id)
