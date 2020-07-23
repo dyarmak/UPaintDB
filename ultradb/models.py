@@ -137,6 +137,9 @@ class Site(db.Model):
 
     def __repr__(self):
         return f"Site('{self.code}', '{self.name}' in '{self.city}')"
+    
+    def __str__(self):
+        return f"{self.name} ({self.code})"
 
 # Defines an are within a site
 class Area(db.Model):
@@ -154,6 +157,9 @@ class Area(db.Model):
 
     def __repr__(self):
         return f"<Area '{self.name} - {self.code}>"
+    
+    def __str__(self):
+        return f"{self.name} ({self.code})"
 
 
 class ColorSheet(db.Model):
@@ -173,14 +179,10 @@ class Room(db.Model):
     name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(50))
     description = db.Column(db.String(100))
-    # Create a column called orig_paint_date and give it the same values as date_last_paint
-    # need to do this in the migration script
-    orig_paint_date = db.Column(db.DateTime)
-    # date_last_paint will only store the date of the most recent paint job. 
-    date_last_paint = db.Column(db.DateTime)
-
+    orig_paint_date = db.Column(db.DateTime)    # Create a column called orig_paint_date and give it the same values as date_last_paint
+    date_last_paint = db.Column(db.DateTime)    # date_last_paint will only store the date of the most recent paint job. 
     freq = db.Column(db.Integer)
-    date_next_paint = db.Column(db.DateTime)
+    date_next_paint = db.Column(db.DateTime)    # Calculated field 
     site_id = db.Column(db.Integer, db.ForeignKey('site.id'),
                           nullable=False)
     # We get this information through the relationship with area
