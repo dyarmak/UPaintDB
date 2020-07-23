@@ -55,14 +55,15 @@ class UpdateAreaForm(FlaskForm):
     # cs_url = URLField(validators=[url()])
     submit = SubmitField('Update Area') 
 
-class NewRoomForm(FlaskForm):
-    name = StringField('Room Name or Description', validators=[DataRequired()])
+class RoomForm(FlaskForm):
     bm_id = StringField('BM ID if available')
-    site_id = QuerySelectField(query_factory=site_query, allow_blank=True)
-    area_id = QuerySelectField(query_factory=area_query, allow_blank=True)
-    building = StringField('Building name', validators=[Length(max=30)])
-    level = IntegerField('Level / Floor of building')
-    freq = IntegerField('Frequency of painting in years (Pleae use -1 for As Needed')
+    name = StringField('Room Name or Description', validators=[DataRequired()])
+    location = StringField('Location of the room', validators=[Length(max=50)])
+    description = StringField('What is the room used for?', validators=[Length(max=100)])
     date_last_paint = DateField('Date last painted, Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[Optional()])
-    glaccount = StringField('GL Account if avail')
-    submit = SubmitField('Add new Room')    
+    freq = IntegerField('Frequency of painting in years (Use -1 for As Needed)', validators=[Optional()])
+    site_id = QuerySelectField('Site', query_factory=site_query, allow_blank=True)
+    area_id = QuerySelectField('Area', query_factory=area_query, allow_blank=True)
+    # We don't want to allow changes to the orig_paint_date
+    glaccount = StringField('GL Account if available')
+    submit = SubmitField('Add new Room')

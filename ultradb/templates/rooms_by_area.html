@@ -6,7 +6,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <p class="text-info">BM_ID: {{ room.bm_id }}</p> 
+              <p class="text-info">BM_ID: {{ room.bm_id }} <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.room_update', cur_site_id=site.id ,cur_area_id=area.id, cur_room_id=room.id) }}">Update Room</a></p> 
               <p>Room name: {{ room.name }} </p>
             </div>
             <p>Most Recently Painted on: 

@@ -1,7 +1,7 @@
 import os
 import os.path
-from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app
-from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, NewRoomForm, NewClientForm
+from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
+from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm
 from ultradb.models import Site, Area, Room, ColorSheet, Client
 from ultradb.sites.utils import save_area_picture
 from flask_login import login_required
@@ -73,6 +73,42 @@ def area_room_list(cur_site_id, cur_area_id):
 # ******************* #
 # ** Update Routes **
 # ******************* #
+
+#update room details; Use to change date of last paint directly (hopefully not used often.)
+@site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/<int:cur_room_id>")
+def room_update(cur_site_id, cur_area_id, cur_room_id):
+    # We don't really need the site or area for this...
+    site = Site.query.get_or_404(cur_site_id) # get current site from the site_id in url
+    area = Area.query.get_or_404(cur_area_id) # get current area from the area_id in url
+    room = Room.query.get_or_404(cur_room_id) # get the room for editting
+
+    form = RoomForm()
+
+    if form.validate_on_submit():
+        room.bm_id = form.bm_id.data 
+        room.name = form.name.data 
+        room.location = form.location.data
+        room.description = form.description.data
+        room.date_last_paint = form.date_last_paint.data
+        room.freq = form.freq.data
+        room.site_id = form.site_id.data.id
+        room.area_id = form.area_id.data.id
+        room.glaccount = form.glaccount.data
+        db.session.commit()
+        flash('The Room has been updated!', 'success')
+        return redirect(url_for('site_bp.area_room_list', cur_site_id=cur_site_id, cur_area_id=cur_area_id))
+    elif request.method == 'GET':
+        form.bm_id.data = room.bm_id
+        form.name.data = room.name
+        form.location.data = room.location
+        form.description.data = room.description
+        form.site_id.data = Site.query.get(room.site_id)
+        form.area_id.data = Area.query.get(room.area_id)
+        form.freq.data = room.freq
+        form.date_last_paint.data = room.date_last_paint
+        form.glaccount.data = room.glaccount
+    return render_template('room_update.html', title='Update Room',  legend='Update Room Info',room=room, area=area, site=site, form=form)
+
 
 # Update area details; Use to Add a color sheet to an area
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/update", methods=['GET', 'POST'])
@@ -221,11 +257,34 @@ def add_area(cur_site_id):
 # Add a new Room
 @site_bp.route("/newRoom", methods=['GET', 'POST'])
 def new_room():
-    form = NewRoomForm()
+    form = RoomForm()
     if form.validate_on_submit():
-        room = Room(bm_id=form.bm_id.data, name=form.name.data, area_id=form.area_id.data.id)
+        room = Room(bm_id=form.bm_id.data, 
+                    name=form.name.data, 
+                    location=form.location.data,
+                    description=form.description.data,
+                    date_last_paint=form.date_last_paint.data,
+                    freq=form.freq.data,
+                    site_id=form.site_id.data.id,
+                    area_id=form.area_id.data.id,
+                    glaccount=form.glaccount.data)
         db.session.add(room)
         db.session.commit()
         flash('New Room Added Successfully!', 'success')
         return redirect(url_for('main_bp.home'))   
     return render_template('room_new.html', title='Add New Room', form=form, legend='Add a New Room')
+
+@site_bp.route("/getareas/<site_id>")
+def areasJson(site_id):
+    # Get all brands for the given supplier
+    areas = Area.query.filter_by(site_id=site_id).all()
+    # Create an empty list
+    areaArray = []
+    # go through returned brands and append as obj to list
+    for area in areas:
+        areaObj = {}
+        areaObj['id'] = area.id 
+        areaObj['name'] = area.name  
+        areaArray.append(areaObj)
+    # Return 'brands' of given supplier as json data
+    return jsonify({'areas' : areaArray})
