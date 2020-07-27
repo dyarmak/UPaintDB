@@ -1,47 +1,61 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>About Page</h1>
-    <p>This Web Application will allow a logged-in user to interact with the database. (Certain features are available without being logged in.)</p>
+    <p>This Web Application will allow a logged-in user to interact with the database. 
     <p>The Web App provides an interface for viewing and updating information pertaining to:</p>
+    <p>Note: Certain features are only available to logged in users.</p>
     <ul>
-        <li>Job Sites with:</li>
+        <li>List of <a href="{{ url_for('site_bp.site_list') }}">Job Sites</a> with:</li>
         <ul>
-            <li>List of Areas within a Site</li>
-            <li>List of Rooms within an Area</li>
-            <li>Any Colorsheets associated with an area</li>
+            <li>List of <a href="{{ url_for('site_bp.site_area_list', cur_site_id=2) }}">Areas</a> within a Job Site</li>
+            <li>List of <a href="{{ url_for('site_bp.area_room_list', cur_site_id=2, cur_area_id=28) }}">Rooms</a> within an Area</li>
+            <li>Show any Colorsheets associated with an area</li>
         </ul>
-        <li>Painting Projects, past, present and future with:</li>
+        <li>Painting <a href="{{ url_for('project_bp.project_list') }}">Projects</a>, past, present and future with:</li>
         <ul>
             <li>Project details (location, dates, status, type, quote)</li>
             <li>List of areas / rooms included in project scope</li>
             <li>Labour breakdown for project</li>
-            
+            <li><a href="{{ url_for('project_bp.view_project', cur_proj_id=2) }}">Example of above</a></li>
+            <li><a href="{{ url_for('site_bp.room_search') }}">Search</a> by BM_id and name</li>
+            <li>Manually <a href="{{ url_for('site_bp.room_update', cur_room_id=36) }}">edit room details</a></li>
+            <li>Upon project completion, any rooms associated with that project have their "Date Last Painted" field updated</li>
+            <li>Each room has a <a href="{{ url_for('site_bp.area_room_list', cur_site_id=1, cur_area_id=1) }}">Painting History</a> associated with it.</li>
         </ul>
-        <li>Employee Time Tracking. Logged in users can:</li>
+        <li>Employee Time Tracking. A logged in users can:</li>
         <ul>
-            <li>Enter their time against a particular project</li>
-            <li>View a summary of their logged hours</li>
+            <li><a href="{{ url_for('timesheet_bp.add_timesheet') }}">Enter their time</a> against a particular project</li>
+            <li><a href="{{ url_for('timesheet_bp.view_timesheet') }}">View a summary</a>  of their logged hours</li>
         </ul>
     </ul>
     <h3>Report Generation</h3>
-    <p>The Web App can also generate reports:</p>
+    <p>The Web App can also generate the following reports:</p>
     <ul>
-        <li>List of rooms that are overdue for painting</li>
-        <li>List of rooms "As Needed" areas sorted by last painted date</li>
-
-        <li></li>
+        <li>List of rooms that are <a href="{{ url_for('site_bp.upcoming', cur_site_id=1) }}">"Overdue"</a> for painting</li>
+        <li>List of rooms that are <a href="{{ url_for('site_bp.as_needed', cur_site_id=1) }}">"As Needed"</a>, sorted by last painted date</li>
     </ul>
+    <p>FUTURE Reports:</p>
+        <ul>
+            <li>List of rooms painted in a selected date range, default to most recently painted</li>
+            <li>Labour hours by date range</li>
+            <li>Labour hours by project</li>
+            <li>Excel Report of all room data for chosen site (For Craig)</li>
+        </ul>
+    <p>In future, this will be easily exportable/downloadable to an excel file</p>
 
     <h3>Future Features:</h3>
     <ul>
-        <li>Interface for updating date of last paint</li>
-        <ul>
-            <li>Alternatively, auto update date_last_paint for rooms in project upon completion</li>
-        </ul>
-        <li>Material Breakdown for project</li>
-        <li>List of areas / rooms painted, sorted by most recent</li>
-        <li>Areas touched within a specified filtered date range</li>
-        <li>Excel Report of all room data for chosen site</li>
+        <li>Material tracking for projects</li>
+        <li>PO and WO number fields for projects</li>
+        <li>A dashboard that graphs various metrics (Rev/Exp by site, hours per week, project profitability, etc)</li>
+        <li>Admin panel to change user permission levels</li>
     </ul>
 
+    <h3>Future Improvements</h3>
+    <ul>
+        <li>Better sorting of Sites / Areas / Rooms / Projects</li>
+        <li>Filters (radio buttons) on view project route, by type (SM,AN,CT), by status (inprogress, complete, invoiced)</li>
+        <li>Weekly automated hours reporting to owner / bookeeper</li>
+        <li>Scheduled Database Backups</li>
+    </ul>
 {% endblock content %}

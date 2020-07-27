@@ -14,6 +14,7 @@ timesheet_bp = Blueprint('timesheet_bp', __name__)
 @login_required
 def delete_ts_entry(ts_id):
     ts = Timesheet.query.get_or_404(ts_id)
+    # check that the TS belongs to the current user.
     if ts.user_id != current_user.id:
         abort(403)
     db.session.delete(ts)
