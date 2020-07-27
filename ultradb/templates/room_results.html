@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+<h4>Search Results</h4>
+<p>Due to the number of columns, this is not well suited for mobile/phone viewing...</p>
+<table style="width:100%; border:1px solid black" class="table table-striped table-responsive">
+    <tr>
+        <th>BM_ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Descrip</th>
+        <th>Last Painted</th>
+        <th>Freq</th>
+        <th>Next Painting</th>
+        <th>Edit</th>
+    </tr> 
+   {% for room in rooms.items %}
+   <tr>
+        <td>{{ room.bm_id }}</td>
+        <td>{{ room.name }}</td>
+        <td>{{ room.location }}</td>
+        <td>{{ room.description }}</td>
+        {% if room.date_last_paint %}
+        <td>{{ room.date_last_paint.strftime('%Y-%m-%d') }}</td>
+        {% else %}
+        <td>None</td>
+        {% endif %}
+        <td>{{ room.freq }}</td>
+        {% if room.date_next_paint %}
+        <td>{{ room.date_next_paint.strftime('%Y-%m-%d') }}</td>
+        {% else %}
+        <td>None</td>
+        {% endif %}
+        <td><a class="btn btn-info btn-sm mb-4" href="{{ url_for('site_bp.room_update', cur_room_id=room.id) }}">Edit</a></td>
+   </tr>
+   {% endfor %}
+</table>
+
+{% for page_num in rooms.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if rooms.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('site_bp.room_results', page=page_num, search_category=search_category, search_string=search_string) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('site_bp.room_results', page=page_num, search_category=search_category, search_string=search_string) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}

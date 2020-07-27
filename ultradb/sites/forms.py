@@ -1,11 +1,24 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, SubmitField, IntegerField
+from wtforms import StringField, SubmitField, IntegerField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Optional
 from ultradb.models import Site, Area
 
+
+class RoomSearchForm(FlaskForm):
+    choices = [('bm_id', 'bm_id'),
+               ('name', 'name')]
+
+    select = SelectField('Search for Rooms by:', choices=choices)
+    search = StringField('')
+    
+    # bm_id = StringField('Serach by BM ID', validators=[Optional()])
+    # name = StringField('Search by Room Name', validators=[Optional()])
+    # date_last_paint = DateField('Search by Date room was last painted, Format in YYYY/MM/DD', format='%Y-%m-%d', validators=[Optional()])
+    # freq = IntegerField('Search by painting frequency in years (Use -1 for As Needed)', validators=[Optional()])
+    submit = SubmitField('Search') 
 
 def site_query():
     return Site.query
@@ -66,4 +79,4 @@ class RoomForm(FlaskForm):
     area_id = QuerySelectField('Area', query_factory=area_query, allow_blank=True)
     # We don't want to allow changes to the orig_paint_date
     glaccount = StringField('GL Account if available')
-    submit = SubmitField('Add new Room')
+    submit = SubmitField('Add or Update Room')

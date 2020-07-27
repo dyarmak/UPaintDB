@@ -71,6 +71,21 @@
                     {{ form.description(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+
+            <div class="form-group">
+                {{ form.date_last_paint.label(class="form-control-label") }}
+                {% if form.date_last_paint.errors %}
+                    {{ form.date_last_paint(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.date_last_paint.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.date_last_paint(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
             <h5>For B&M Rooms, please also enter the following:</h5>
             <div class="form-group">
                 {{ form.bm_id.label(class="form-control-label") }}

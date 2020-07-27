@@ -1,7 +1,8 @@
 import os
 import os.path
+# from sqlalchemy import func
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
-from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm
+from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm, RoomSearchForm
 from ultradb.models import Site, Area, Room, ColorSheet, Client
 from ultradb.sites.utils import save_area_picture
 from flask_login import login_required
@@ -13,17 +14,54 @@ from config import colorSheetBucket
 
 site_bp = Blueprint('site_bp', __name__)
 
+# ******************* #
+# ** Search Routes ** #
+# ******************* #
+
+@site_bp.route("/search/rooms", methods=['GET','POST'])
+def room_search():
+    form = RoomSearchForm()
+    if request.method == 'POST':
+        search_category = form.select.data
+        search_string = form.search.data
+        return redirect(url_for('site_bp.room_results', search_category=search_category, search_string=search_string))
+
+    return render_template('room_search.html', form=form)
+
+@site_bp.route("/search/rooms/results")
+def room_results():
+    search_category = request.args.get('search_category')
+    # Load the search string wrapped in '%' for the ilike command
+    search_string = "%" + str(request.args.get('search_string')) + "%"
+    page = request.args.get('page', 1, type=int)
+    
+    rooms = []
+    if search_category == 'bm_id':
+        rooms = Room.query.filter(Room.bm_id.ilike(search_string)).order_by(Room.bm_id.asc()).paginate(page=page, per_page=25)
+    elif search_category == 'name':
+        rooms = Room.query.filter(Room.name.ilike(search_string)).order_by(Room.name.asc()).paginate(page=page, per_page=25)
+    # Alternative way to achive the same results
+    # if search_category == 'bm_id':
+    #     rooms = Room.query.filter(func.lower(Room.bm_id).contains(search_string)).order_by(Room.bm_id.asc()).paginate(page=page, per_page=25)
+    # elif search_category == 'name':
+    #     rooms = Room.query.filter(func.lower(Room.name).contains(search_string)).order_by(Room.name.asc()).paginate(page=page, per_page=25)
+    else:
+        flash('Something went wrong', 'info')
+        redirect(url_for('site_bp.room_search'))
+    
+    return render_template('room_results.html', rooms=rooms, page=page, search_category=search_category, search_string=search_string)
 
 
+
+# ***************** #
+# ** View Routes ** #
+# ***************** #
+
+# View all clients
 @site_bp.route("/client")
 def client_list():
     clients = Client.query.all()
     return render_template('client_list.html', title="Client List", clients=clients)
-
-
-# ***************** #
-# ** View Routes **
-# ***************** #
 
 # View all sites
 @site_bp.route("/site")
@@ -75,12 +113,16 @@ def area_room_list(cur_site_id, cur_area_id):
 # ******************* #
 
 #update room details; Use to change date of last paint directly (hopefully not used often.)
-@site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/<int:cur_room_id>")
-def room_update(cur_site_id, cur_area_id, cur_room_id):
+@site_bp.route("/rooms/<int:cur_room_id>")
+@login_required
+def room_update(cur_room_id):
     # We don't really need the site or area for this...
-    site = Site.query.get_or_404(cur_site_id) # get current site from the site_id in url
-    area = Area.query.get_or_404(cur_area_id) # get current area from the area_id in url
     room = Room.query.get_or_404(cur_room_id) # get the room for editting
+
+    # The room has the site_id and area_id values in it
+    # We'll grab these for the redirect
+    site_id = room.site_id
+    area_id = room.area_id
 
     form = RoomForm()
 
@@ -96,7 +138,7 @@ def room_update(cur_site_id, cur_area_id, cur_room_id):
         room.glaccount = form.glaccount.data
         db.session.commit()
         flash('The Room has been updated!', 'success')
-        return redirect(url_for('site_bp.area_room_list', cur_site_id=cur_site_id, cur_area_id=cur_area_id))
+        return redirect(url_for('site_bp.area_room_list', cur_site_id=site_id, cur_area_id=area_id))
     elif request.method == 'GET':
         form.bm_id.data = room.bm_id
         form.name.data = room.name
@@ -107,7 +149,7 @@ def room_update(cur_site_id, cur_area_id, cur_room_id):
         form.freq.data = room.freq
         form.date_last_paint.data = room.date_last_paint
         form.glaccount.data = room.glaccount
-    return render_template('room_update.html', title='Update Room',  legend='Update Room Info',room=room, area=area, site=site, form=form)
+    return render_template('room_update.html', title='Update Room',  legend='Update Room Info',room=room, form=form)
 
 
 # Update area details; Use to Add a color sheet to an area
@@ -274,6 +316,9 @@ def new_room():
         return redirect(url_for('main_bp.home'))   
     return render_template('room_new.html', title='Add New Room', form=form, legend='Add a New Room')
 
+# ******************* #
+# *** JSON Routes *** #
+# ******************* #
 @site_bp.route("/getareas/<site_id>")
 def areasJson(site_id):
     # Get all brands for the given supplier
