@@ -30,8 +30,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
  
     csp = {
-    'img-src': '*',
-    'script-src': '*'
+        'default-src':'*'
     }
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
