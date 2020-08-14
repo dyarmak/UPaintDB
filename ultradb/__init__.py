@@ -32,13 +32,21 @@ def create_app(config_class=Config):
     csp = {
         'default-src': [
             '\'self\'',
-            '\'unsafe-inline\'',
-            'maxcdn.bootstrapcdn.com',
-            'code.jquery.com',
-            'cdnjs.cloudflare.com'
+            '\'unsafe-inline\''
         ],
-        "script-src": "unsafe-inline",
-        "style-src": "unsafe-inline"
+        'script-src':[
+                '\'self\'', 
+                'unsafe-inline',
+                'code.jquery.com',
+                'cdnjs.cloudflare.com',
+                'maxcdn.bootstrapcdn.com'
+        ],
+        'style-src': [
+                '\'self\'', 
+                'unsafe-inline',
+                'maxcdn.bootstrapcdn.com'
+        ],
+        'img-src': ['data:', '\'self\'', 'maxcdn.bootstrapcdn.com']
     }
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
