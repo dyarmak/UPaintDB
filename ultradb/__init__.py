@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_mail import Mail
+from flask_talisman import Talisman
 
 
 mail = Mail()
@@ -14,6 +15,9 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'auth_bp.login'
 login_manager.login_message_category = 'info'
+talisman = Talisman()
+
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -24,6 +28,12 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+ 
+    csp = {
+    'img-src': '*',
+    'script-src': '*'
+    }
+    talisman.init_app(app, force_https=True, content_security_policy=csp)
 
     from ultradb.auth.routes import auth_bp
     from ultradb.main.routes import main_bp
