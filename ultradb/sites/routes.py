@@ -2,7 +2,7 @@ import os
 import os.path
 # from sqlalchemy import func
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
-from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm, RoomSearchForm
+from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm, RoomSearchForm, UpdateClientForm
 from ultradb.models import Site, Area, Room, ColorSheet, Client
 from ultradb.sites.utils import save_area_picture
 from flask_login import login_required
@@ -112,6 +112,30 @@ def area_room_list(cur_site_id, cur_area_id):
 # ** Update Routes **
 # ******************* #
 
+# Update Client Details
+@site_bp.route("/client/<int:cur_client_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_client(cur_client_id):
+    form = UpdateClientForm()
+    client = Client.query.get_or_404(cur_client_id)
+
+    if form.validate_on_submit():
+        client.name=form.name.data
+        client.contactName=form.contactName.data
+        client.contactEmail=form.contactEmail.data
+        client.contactPhone=form.contactPhone.data
+        db.session.commit()
+        flash('A new Client has been created!', 'success')
+        return redirect(url_for('site_bp.client_list'))
+
+    elif request.method == 'GET':
+        form.name.data = client.name
+        form.contactName.data = client.contactName 
+        form.contactEmail.data = client.contactEmail 
+        form.contactPhone.data = client.contactPhone
+    return render_template('client_update.html', title='Update Client',
+                             form=form, legend='Update Client')
+    
 #update room details; Use to change date of last paint directly (hopefully not used often.)
 @site_bp.route("/rooms/<int:cur_room_id>")
 @login_required

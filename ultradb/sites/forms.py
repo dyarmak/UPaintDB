@@ -37,6 +37,7 @@ class UpdateClientForm(FlaskForm):
     name = StringField('Client / Business Name', validators=[DataRequired()])
     contactName = StringField('Name of Primary Contact Person', validators=[Optional()])
     contactEmail = StringField('Email of Primary Contact Person', validators=[Optional()])
+    contactPhone = StringField('Phone number for Primary Contact Person', validators=[Optional()])
     submit = SubmitField('Update Client Info') 
 
 class NewSiteForm(FlaskForm):

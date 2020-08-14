@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            {{ render_field(form.name) }}
+
+            {{ render_field(form.contactName) }}
+
+            {{ render_field(form.contactEmail) }}
+
+            {{ render_field(form.contactPhone) }}
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
