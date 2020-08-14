@@ -17,9 +17,40 @@ project_bp = Blueprint('project_bp', __name__)
 @project_bp.route("/projects")
 @login_required
 def project_list():
-    projects = Project.query.all()
-    # Should apply a couple of sorts here
-    # First should be active projects, then by day completed
+    projects = []
+    # Should apply a couple of sorts here, we'll build the list in our custom order
+    # First should be active projects, IE status_id=3
+    active = Project.query.filter_by(status_id=3).all()
+    for item in active:
+        projects.append(item)
+    # then Painting Complete, IE status_id=4
+    paintComplete = Project.query.filter_by(status_id=4).all()
+    for item in paintComplete:
+        projects.append(item)
+    # then we want to get the upcoming and quoted IE status_id = 1||2
+    upcoming = Project.query.filter_by(status_id=1).all()
+    for item in upcoming:
+        projects.append(item)    
+    
+    quoted = Project.query.filter_by(status_id=2).all()
+    for item in quoted:
+        projects.append(item)
+    # then paused, IE status_id=6
+    paused = Project.query.filter_by(status_id=6).all()
+    for item in paused:
+        projects.append(item)
+
+    # then invoiced, IE status_id=5, needs to be sorted by date completed
+    invoiced = Project.query.filter_by(status_id=5).order_by(Project.date_finished.desc()).all()
+    for item in invoiced:
+        projects.append(item)
+
+    # then finally cancelled, IE status_id=7
+    cancelled = Project.query.filter_by(status_id=7).all()
+    for item in cancelled:
+        projects.append(item)
+    # projects = Project.query.order_by(Project.status_id.desc()).all()
+
     return render_template('project_list.html', title='Project List', projects=projects)
 
 @project_bp.route("/newprojectsimple", methods=['GET', 'POST'])
