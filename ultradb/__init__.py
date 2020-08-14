@@ -36,14 +36,14 @@ def create_app(config_class=Config):
         ],
         'script-src':[
                 '\'self\'', 
-                'unsafe-inline',
+                '\'unsafe-inline\'',
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com'
         ],
         'style-src': [
                 '\'self\'', 
-                'unsafe-inline',
+                '\'unsafe-inline\'',
                 'maxcdn.bootstrapcdn.com'
         ],
         'img-src': ['data:', '\'self\'', 'maxcdn.bootstrapcdn.com']
