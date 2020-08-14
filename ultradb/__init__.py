@@ -32,10 +32,13 @@ def create_app(config_class=Config):
     csp = {
         'default-src': [
             '\'self\'',
+            '\'unsafe-inline\'',
             'maxcdn.bootstrapcdn.com',
             'code.jquery.com',
             'cdnjs.cloudflare.com'
-        ]
+        ],
+        "script-src": "unsafe-inline",
+        "style-src": "unsafe-inline"
     }
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
