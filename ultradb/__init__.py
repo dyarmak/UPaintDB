@@ -29,10 +29,22 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
+
     csp = {
         'default-src': [
             '\'self\'',
-            '\'unsafe-inline\''
+            '\'unsafe-inline\'',
+            '*.gstatic.com'
+        ],
+        'font-src': [
+                '\'self\'',
+                'themes.googleusercontent.com',
+                '*.gstatic.com'
+        ],
+        'frame-src': [
+                '\'self\'',
+                'www.google.com',
+                'www.youtube.com'
         ],
         'script-src':[
                 '\'self\'', 
@@ -40,19 +52,25 @@ def create_app(config_class=Config):
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
+                'ajax.googleapis.com',
+                '*.googleanalytics.com',
+                '*.google-analytics.com'
         ],
         'style-src': [
                 '\'self\'', 
                 '\'unsafe-inline\'',
-                'maxcdn.bootstrapcdn.com'
+                'maxcdn.bootstrapcdn.com',
+                'ajax.googleapis.com', 
+                'fonts.googleapis.com', 
+                '*.gstatic.com'
         ],
         'img-src': [
                     'data:', 
                     '\'self\'', 
                     'maxcdn.bootstrapcdn.com']
     }
-    # Add the Google CSP Policy to mine
-    csp.update(GOOGLE_CSP_POLICY)
+
+
 
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
