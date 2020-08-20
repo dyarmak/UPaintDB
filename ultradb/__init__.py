@@ -40,16 +40,15 @@ def create_app(config_class=Config):
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
-                'googletagmanager.com',
-                'https://www.google-analytics.com',
-                'https://ssl.google-analytics.com'
+                '*.googletagmanager.com',
+                '*.google-analytics.com',
         ],
         'style-src': [
                 '\'self\'', 
                 '\'unsafe-inline\'',
                 'maxcdn.bootstrapcdn.com'
         ],
-        'img-src': ['data:', '\'self\'', 'maxcdn.bootstrapcdn.com', 'googletagmanager.com']
+        'img-src': ['data:', '\'self\'', 'maxcdn.bootstrapcdn.com', '*.googletagmanager.com', '*.google-analytics.com']
     }
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
