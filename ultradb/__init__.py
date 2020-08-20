@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_mail import Mail
-from flask_talisman import Talisman
+from flask_talisman import Talisman, GOOGLE_CSP_POLICY
 
 
 mail = Mail()
@@ -28,7 +28,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
- 
+
     csp = {
         'default-src': [
             '\'self\'',
@@ -40,8 +40,6 @@ def create_app(config_class=Config):
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
-                'https://*.googletagmanager.com',
-                'https://*.google-analytics.com',
         ],
         'style-src': [
                 '\'self\'', 
@@ -51,10 +49,11 @@ def create_app(config_class=Config):
         'img-src': [
                     'data:', 
                     '\'self\'', 
-                    'maxcdn.bootstrapcdn.com', 
-                    'https://*.googletagmanager.com', 
-                    'https://*.google-analytics.com']
+                    'maxcdn.bootstrapcdn.com']
     }
+    # Add the Google CSP Policy to mine
+    csp.update(GOOGLE_CSP_POLICY)
+
     talisman.init_app(app, force_https=True, content_security_policy=csp)
 
     from ultradb.auth.routes import auth_bp
