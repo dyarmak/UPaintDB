@@ -39,7 +39,8 @@ def create_app(config_class=Config):
                 '\'unsafe-inline\'',
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
-                'maxcdn.bootstrapcdn.com'
+                'maxcdn.bootstrapcdn.com',
+                'googletagmanager.com'
         ],
         'style-src': [
                 '\'self\'', 
