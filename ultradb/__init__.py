@@ -49,12 +49,14 @@ def create_app(config_class=Config):
         'script-src':[
                 '\'self\'', 
                 '\'unsafe-inline\'',
+                '\'unsafe-eval\'',
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
                 'ajax.googleapis.com',
-                '*.googleanalytics.com',
-                '*.google-analytics.com',
+                'www.googleanalytics.com',
+                'www.google-analytics.com',
+                'https://www.googletagmanager.com',
                 'https://www.google-analytics.com',
                 'https://www.googletagmanager.com',
                 'https://google-analytics.com'
