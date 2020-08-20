@@ -54,7 +54,10 @@ def create_app(config_class=Config):
                 'maxcdn.bootstrapcdn.com',
                 'ajax.googleapis.com',
                 '*.googleanalytics.com',
-                '*.google-analytics.com'
+                '*.google-analytics.com',
+                'https://www.google-analytics.com',
+                'https://www.googletagmanager.com',
+                'https://google-analytics.com'
         ],
         'style-src': [
                 '\'self\'', 
@@ -67,8 +70,10 @@ def create_app(config_class=Config):
         'img-src': [
                     'data:', 
                     '\'self\'', 
-                    'maxcdn.bootstrapcdn.com']
-    }
+                    'maxcdn.bootstrapcdn.com'],
+        'object-src' : [
+                    '\'self\''
+        ]    }
 
 
 
