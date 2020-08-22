@@ -50,6 +50,7 @@ def create_app(config_class=Config):
                 '\'self\'', 
                 '\'unsafe-eval\'',
                 '\'unsafe-inline\'',
+                'data:',
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
