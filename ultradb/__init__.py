@@ -48,8 +48,8 @@ def create_app(config_class=Config):
         ],
         'script-src':[
                 '\'self\'', 
-                '\'unsafe-inline\'',
                 '\'unsafe-eval\'',
+                '\'unsafe-inline\'',
                 'code.jquery.com',
                 'cdnjs.cloudflare.com',
                 'maxcdn.bootstrapcdn.com',
@@ -59,7 +59,8 @@ def create_app(config_class=Config):
                 'https://www.googletagmanager.com',
                 'https://www.google-analytics.com',
                 'https://www.googletagmanager.com',
-                'https://google-analytics.com'
+                'https://google-analytics.com',
+                'https://tagmanager.google.com/'
         ],
         'style-src': [
                 '\'self\'', 
