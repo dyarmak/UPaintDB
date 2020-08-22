@@ -74,7 +74,9 @@ def create_app(config_class=Config):
         'img-src': [
                     'data:', 
                     '\'self\'', 
-                    'maxcdn.bootstrapcdn.com'],
+                    'maxcdn.bootstrapcdn.com',
+                    'https://www.googletagmanager.com'
+                    ],
         'object-src' : [
                     '\'self\''
         ]    }
