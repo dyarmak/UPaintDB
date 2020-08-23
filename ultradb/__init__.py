@@ -75,6 +75,7 @@ def create_app(config_class=Config):
                     'data:', 
                     '\'self\'', 
                     'maxcdn.bootstrapcdn.com',
+                    'https://www.google-analytics.com',
                     'https://www.googletagmanager.com'
                     ],
         'object-src' : [
