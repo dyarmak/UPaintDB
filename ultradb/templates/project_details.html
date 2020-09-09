@@ -2,6 +2,9 @@
 {% block content %}
 <div class="content-section">
     <H1>Project: {{ proj.name }}</H1>
+    {% if current_user.access_level == 7 %}
+        <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('project_bp.excel_project', cur_proj_id=proj.id) }}" style="float: right;">Download Excel</a>
+    {% endif %}
     {% if client%}
         <b>Client:</b> {{ client.name }}
     {% endif %}    
