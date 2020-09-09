@@ -1,14 +1,16 @@
-from datetime import datetime
-from flask import Blueprint, render_template, url_for, flash, redirect, request
+from flask import Blueprint, render_template, url_for, flash, redirect, request, send_file
 from ultradb import db
 from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm
 from ultradb.models import Site, Area, Room, Project, Status, Worktype, Client
 
-from flask_login import current_user, login_required
-from flask_mail import Message
+from flask_login import login_required
 
 from ultradb.auth.utils import roleAuth
 from ultradb.projects.utils import check_status_change
+
+from supfuncs import build_project_report
+import re
+import io
 
 project_bp = Blueprint('project_bp', __name__)
 
@@ -140,6 +142,29 @@ def view_project(cur_proj_id):
                         # areas=areas, 
                         client=client, rooms=rooms, tss=tss, total_hours=total_hours)
 
+
+# Generate Excel file of Project details
+@project_bp.route("/projects/<int:cur_proj_id>/excel")
+@login_required
+def excel_project(cur_proj_id):
+
+    wb = build_project_report(cur_proj_id)
+    
+    # get name of project and strip any special characters
+    name = Project.query.get_or_404(cur_proj_id).name
+    name = re.sub(r'\W+',' ',name)
+    name = name.strip()
+    file_name = name + '.xlsx'
+    
+    #output as bytes
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(output, 
+                    as_attachment=True, 
+                    attachment_filename=file_name,
+                    mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 # Update an existing Project, Add rooms and areas?
 @project_bp.route("/projects/<int:cur_proj_id>/update", methods=['GET', 'POST'])
@@ -308,7 +333,7 @@ def add_room_to_project(cur_proj_id, selected_area_id):
         return redirect(url_for('project_bp.project_list'))
 
     elif request.method == 'GET':
-        form.room_list.data = proj.room_list
+        form.room_list.data = proj.room_list.all()
 
     return render_template('project_add_room.html', title='Add Rooms to a Project', 
                             legend='Select Rooms to Add', selected_area_id=selected_area_id,
