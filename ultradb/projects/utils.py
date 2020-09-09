@@ -1,4 +1,5 @@
 from datetime import datetime
+from ultradb import db
 
 def check_status_change(proj, orig_status):
     # Check if the project status has been changed
@@ -13,3 +14,4 @@ def check_status_change(proj, orig_status):
                 # update the room table
                 for rm in proj.room_list:
                     rm.date_last_paint = proj.date_finished
+                db.session.commit()
