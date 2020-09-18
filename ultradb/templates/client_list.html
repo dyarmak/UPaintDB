@@ -10,13 +10,13 @@
               {% endif %}
               </H4>
               </div>
-            {% if client.contactName|length > 0 %}
+            {% if client.contactName %}
             <p>Contact Name: {{ client.contactName }} 
             {% endif %}
-            {% if client.contactEmail|length > 0 %}
+            {% if client.contactEmail %}
             <p>Contact Email: {{ client.contactEmail }}</p>
             {% endif %}
-            {% if client.contactPhone|length > 0 %}
+            {% if client.contactPhone %}
             <p>Phone Number: {{ client.contactPhone }}</p>
             {% endif %}
         </div>

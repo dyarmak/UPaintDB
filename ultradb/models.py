@@ -81,7 +81,7 @@ class Client(db.Model):
 
     def __repr__(self):
         return f"Client(id={self.id}, name='{self.name}')"
-
+    
 
 # Realizing that what we really want is a client contacts list
 #   
