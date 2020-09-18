@@ -3,6 +3,8 @@ from ultradb import db
 from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm
 from ultradb.models import Site, Area, Room, Project, Status, Worktype, Client
 
+from sqlalchemy import desc, and_
+
 from flask_login import login_required
 
 from ultradb.auth.utils import roleAuth
@@ -22,7 +24,7 @@ def project_list():
     projects = []
     # Should apply a couple of sorts here, we'll build the list in our custom order
     # First should be active projects, IE status_id=3
-    active = Project.query.filter_by(status_id=3).all()
+    active = Project.query.filter_by(status_id=3).order_by(desc(Project.date_start)).all()
     for item in active:
         projects.append(item)
     # then Painting Complete, IE status_id=4
@@ -147,7 +149,10 @@ def view_project(cur_proj_id):
 @project_bp.route("/projects/<int:cur_proj_id>/excel")
 @login_required
 def excel_project(cur_proj_id):
-
+    # Must be Admin
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
+        
     wb = build_project_report(cur_proj_id)
     
     # get name of project and strip any special characters
