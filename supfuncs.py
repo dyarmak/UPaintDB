@@ -428,3 +428,83 @@ def build_asneededDF(site_id, area_id=None):
     sortedDF.reset_index(drop=True, inplace=True)
 
     return sortedDF
+
+
+def build_filtered_project_list(client_id, site_id, status_id, typeOfWork_id, start_date_after, start_date_before, finish_date_after, finish_date_before):
+    """
+    Build list of projects based on filter input
+    """
+    # Establish Connection
+    postgres_connection_URL = os.environ.get('DATABASE_URL')
+    engine = create_engine(postgres_connection_URL)
+    # Get list of all projects
+    all_projects=pd.read_sql_query("SELECT * FROM Project", con=engine)
+
+    filt_dict = {
+    "client_id": client_id, 
+    "site_id": site_id, 
+    "status_id": status_id, 
+    "typeOfWork_id": typeOfWork_id, 
+}
+    # handle no param case
+    if client_id==None and site_id==None and status_id==None and typeOfWork_id==None:
+        res = all_projects
+    else:
+        # Build query string that only queries for the entered params
+        query_string = ''
+        for key, val in filt_dict.items():
+            if val != None:
+                if query_string != '':
+                    query_string += " & "
+                query_string += (str(key) + " == " + str(val))
+        # filter results 
+        res = all_projects.query(query_string)
+
+    print(client_id)
+    print(site_id) 
+    print(status_id)
+    print(typeOfWork_id)
+    print(start_date_after)
+    print(start_date_before)
+    print(finish_date_after)
+    print(finish_date_before)
+
+    # filter on start date
+    # 4 possible combos
+    if start_date_after and start_date_before==None:
+        start_date_after = np.datetime64(start_date_after)
+        start_date_mask = (res['date_start'] > start_date_after)
+        res = res.loc[start_date_mask]
+    elif start_date_before and start_date_after==None:
+        start_date_before = np.datetime64(start_date_before)
+        start_date_mask = (res['date_start'] <= start_date_before)
+        res = res.loc[start_date_mask]
+    elif start_date_after and start_date_before:
+        start_date_before = np.datetime64(start_date_before)
+        start_date_after = np.datetime64(start_date_after)
+        start_date_mask = (res['date_start'] > start_date_after) & (res['date_start'] <= start_date_before)
+        res = res.loc[start_date_mask]
+    else: # both are None
+        pass
+    
+    # filter on end date
+    # 4 possible combos
+    if finish_date_after and finish_date_before==None:
+        finish_date_after = np.datetime64(finish_date_after)
+        finish_date_mask = (res['date_finished'] > finish_date_after)
+        res = res.loc[finish_date_mask]
+    elif finish_date_before and finish_date_after==None:
+        finish_date_before = np.datetime64(finish_date_before)
+        finish_date_mask = (res['date_finished'] <= finish_date_before)
+        res = res.loc[finish_date_mask]
+    elif finish_date_after and finish_date_before:
+        finish_date_after = np.datetime64(finish_date_after)
+        finish_date_before = np.datetime64(finish_date_before)
+        finish_date_mask = (res['date_finished'] > finish_date_after) & (res['date_finished'] <= finish_date_before)
+        res = res.loc[finish_date_mask]
+    else: # both are None
+        pass
+
+    # Output the final list of Ids
+    project_id_list = res.id.to_list()
+    return project_id_list

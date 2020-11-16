@@ -5,6 +5,38 @@
 {% elif current_user.access_level == 5 %}
 <H5><a href="{{ url_for('project_bp.new_project_simple') }}">Add New Project</a></H5>
 {% endif %}
+
+<!-- Filter form -->
+<div class="content-section">
+  {% from "_formhelpers.html" import render_field %}
+  <form method="POST" action="">
+      {{ filt.hidden_tag() }}
+      <fieldset class="form-group">
+
+          <legend class="border-bottom mb-4">{{ legend }}</legend>
+          {{ render_field(filt.client_id) }}
+
+          {{ render_field(filt.site_id) }}
+
+          {{ render_field(filt.status_id) }}
+
+          {{ render_field(filt.typeOfWork_id) }}
+
+          {{ render_field(filt.start_date_after)}}
+
+          {{ render_field(filt.start_date_before)}}
+
+          {{ render_field(filt.finish_date_after)}}
+
+          {{ render_field(filt.finish_date_before)}}
+
+      </fieldset>
+      <div class="form-group">
+          {{ filt.submit(class="btn btn-outline-info") }}
+      </div>
+  </form>
+</div>
+
     {% for project in projects %}
         <article class="media content-section">
           <div class="media-body">

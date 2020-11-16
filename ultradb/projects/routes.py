@@ -1,6 +1,7 @@
+from logging import Filter
 from flask import Blueprint, render_template, url_for, flash, redirect, request, send_file
 from ultradb import db
-from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm
+from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm, FilterProjectsForm
 from ultradb.models import Site, Area, Room, Project, Status, Worktype, Client
 
 from sqlalchemy import desc, and_
@@ -10,52 +11,111 @@ from flask_login import login_required
 from ultradb.auth.utils import roleAuth
 from ultradb.projects.utils import check_status_change
 
-from supfuncs import build_project_report
+from supfuncs import build_project_report, build_filtered_project_list
 import re
 import io
+
 
 project_bp = Blueprint('project_bp', __name__)
 
 
 # View all projects (active projects filter?)
-@project_bp.route("/projects")
+@project_bp.route("/projects", methods=['GET', 'POST'])
 @login_required
 def project_list():
-    projects = []
-    # Should apply a couple of sorts here, we'll build the list in our custom order
-    # First should be active projects, IE status_id=3
-    active = Project.query.filter_by(status_id=3).order_by(desc(Project.date_start)).all()
-    for item in active:
-        projects.append(item)
-    # then Painting Complete, IE status_id=4
-    paintComplete = Project.query.filter_by(status_id=4).all()
-    for item in paintComplete:
-        projects.append(item)
-    # then we want to get the upcoming and quoted IE status_id = 1||2
-    upcoming = Project.query.filter_by(status_id=1).all()
-    for item in upcoming:
-        projects.append(item)    
+
+    filt = FilterProjectsForm()
+
+    # Get the default list of projects
+    def get_default_project_list():
+        prjs = []
+        # Should apply a couple of sorts here, we'll build the list in our custom order
+        # First should be active projects, IE status_id=3
+        active = Project.query.filter_by(status_id=3).order_by(desc(Project.date_start)).all()
+        for item in active:
+            prjs.append(item)
+        # then Painting Complete, IE status_id=4
+        paintComplete = Project.query.filter_by(status_id=4).all()
+        for item in paintComplete:
+            prjs.append(item)
+        # then we want to get the upcoming and quoted IE status_id = 1||2
+        upcoming = Project.query.filter_by(status_id=1).all()
+        for item in upcoming:
+            prjs.append(item)    
+        
+        quoted = Project.query.filter_by(status_id=2).all()
+        for item in quoted:
+            prjs.append(item)
+        # then paused, IE status_id=6
+        paused = Project.query.filter_by(status_id=6).all()
+        for item in paused:
+            prjs.append(item)
+
+        # then invoiced, IE status_id=5, needs to be sorted by date completed
+        invoiced = Project.query.filter_by(status_id=5).order_by(Project.date_finished.desc()).all()
+        for item in invoiced:
+            prjs.append(item)
+
+        # then finally cancelled, IE status_id=7
+        cancelled = Project.query.filter_by(status_id=7).all()
+        for item in cancelled:
+            prjs.append(item)
+        # prjs = Project.query.order_by(Project.status_id.desc()).all()
+        return prjs
+    projects = get_default_project_list()
     
-    quoted = Project.query.filter_by(status_id=2).all()
-    for item in quoted:
-        projects.append(item)
-    # then paused, IE status_id=6
-    paused = Project.query.filter_by(status_id=6).all()
-    for item in paused:
-        projects.append(item)
+    # If filter form is submitted
+    if filt.validate_on_submit():
+        
+        # Clear the list of projects
+        projects = []
 
-    # then invoiced, IE status_id=5, needs to be sorted by date completed
-    invoiced = Project.query.filter_by(status_id=5).order_by(Project.date_finished.desc()).all()
-    for item in invoiced:
-        projects.append(item)
+        if filt.client_id.data:
+            cl_id= filt.client_id.data.id
+        else: 
+            cl_id = None
+        
+        if filt.site_id.data:
+            si_id = filt.site_id.data.id
+        else:
+            si_id = None
 
-    # then finally cancelled, IE status_id=7
-    cancelled = Project.query.filter_by(status_id=7).all()
-    for item in cancelled:
-        projects.append(item)
-    # projects = Project.query.order_by(Project.status_id.desc()).all()
+        if filt.status_id.data:
+            st_id = filt.status_id.data.id
+        else:
+            st_id = None
+        
+        if filt.typeOfWork_id.data:
+            tw_id = filt.typeOfWork_id.data.id
+        else:
+            tw_id = None
+        
+        if filt.start_date_after.data:
+            sda = filt.start_date_after.data
+        else:
+            sda = None
+        
+        if filt.start_date_before.data:
+            sdb = filt.start_date_before.data
+        else: 
+            sdb = None
+        
+        if filt.finish_date_after.data:
+            fda = filt.finish_date_after.data
+        else:
+            fda = None
+        
+        if filt.finish_date_after.data:
+            fdb = filt.finish_date_after.data
+        else:
+            fdb = None
+        
+        project_id_list = build_filtered_project_list(cl_id, si_id, st_id, tw_id, sda, sdb, fda, fdb)
+        
 
-    return render_template('project_list.html', title='Project List', projects=projects)
+        projects = Project.query.filter(Project.id.in_(project_id_list)).order_by(desc(Project.date_start)).all()
+
+    return render_template('project_list.html', title='Project List', projects=projects, filt=filt, legend="Filter Project List")
 
 @project_bp.route("/newprojectsimple", methods=['GET', 'POST'])
 @login_required
