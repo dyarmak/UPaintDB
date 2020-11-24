@@ -71,7 +71,12 @@
     </header>
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-8">
+      {% if filt %}
+        <div class="col-lg-4">
+            {% block filter %} {% endblock %}
+        </div>
+      {% endif %}
+        <div class="col-lg">
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -84,7 +89,7 @@
           {% block content %}{% endblock %}
         </div>
         <!-- Floating right side Nav Bar-->
-        <div class="col-md-4">
+        <div class="col-lg-3">
           <div class="content-section">
             {% if current_user.access_level == 7 %}
               <h3>Admin Panel</h3>
