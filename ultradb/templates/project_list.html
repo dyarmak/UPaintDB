@@ -1,55 +1,144 @@
 {% extends "layout.html" %}
+{% block filter %}
+<!-- Filter form -->
+<div class="content-section">
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="">
+        {{ filt.hidden_tag() }}
+        <fieldset class="form-group">
+  
+            <legend class="border-bottom mb-4">{{ legend }}  <div id="filterBtn" class="btn btn-outline-info">Apply Filters</div></legend>
+            {{ render_field(filt.client_id) }}
+  
+            {{ render_field(filt.site_id) }}
+  
+            {{ render_field(filt.status_id) }}
+  
+            {{ render_field(filt.typeOfWork_id) }}
+  
+            {{ render_field(filt.start_date_after)}}
+  
+            {{ render_field(filt.start_date_before)}}
+  
+            {{ render_field(filt.finish_date_after)}}
+  
+            {{ render_field(filt.finish_date_before)}}
+  
+        </fieldset>
+        <div class="form-group">
+            
+        </div>
+    </form>
+  </div>
+{% endblock filter %}
+
 {% block content %}
 {% if current_user.access_level == 7 %}
 <H5><a href="{{ url_for('project_bp.new_project') }}">Add New Project</a></H5>
 {% elif current_user.access_level == 5 %}
 <H5><a href="{{ url_for('project_bp.new_project_simple') }}">Add New Project</a></H5>
 {% endif %}
+<div id='projectList'>
 
-<!-- Filter form -->
-<div class="content-section">
-  {% from "_formhelpers.html" import render_field %}
-  <form method="POST" action="">
-      {{ filt.hidden_tag() }}
-      <fieldset class="form-group">
-
-          <legend class="border-bottom mb-4">{{ legend }}</legend>
-          {{ render_field(filt.client_id) }}
-
-          {{ render_field(filt.site_id) }}
-
-          {{ render_field(filt.status_id) }}
-
-          {{ render_field(filt.typeOfWork_id) }}
-
-          {{ render_field(filt.start_date_after)}}
-
-          {{ render_field(filt.start_date_before)}}
-
-          {{ render_field(filt.finish_date_after)}}
-
-          {{ render_field(filt.finish_date_before)}}
-
-      </fieldset>
-      <div class="form-group">
-          {{ filt.submit(class="btn btn-outline-info") }}
-      </div>
-  </form>
-</div>
 
     {% for project in projects %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{{ url_for('project_bp.view_project', cur_proj_id=project.id) }}">{{ project.name }}</a>
+              <a class="mr-2" target="_blank" href="{{ project.view_url }}">{{ project.name }}</a>
               {% if current_user.access_level ==7 %}
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('project_bp.update_project', cur_proj_id=project.id) }}" style="float: right;">Update Project</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ project.update_url }}" style="float: right;">Update Project</a>
               {% elif current_user.access_level == 5 %}
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('project_bp.update_project_simple', cur_proj_id=project.id) }}" style="float: right;">Update Project</a> 
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ project.update_simple_url }}" style="float: right;">Update Project</a> 
               {% endif %}
             </div>
             <p class="article-content">{{ project.description }}</p>
           </div>
         </article>
     {% endfor %}
+
+</div>
+
+    <script>
+        // get the various id values
+        var cl_id = document.getElementById("client_id");
+        var si_id = document.getElementById("site_id");
+        var st_id = document.getElementById("status_id");
+        var tw_id = document.getElementById("typeOfWork_id");
+        var sda = document.getElementById("start_date_after");
+        var sdb = document.getElementById("start_date_before");
+        var fda = document.getElementById("finish_date_after");
+        var fdb = document.getElementById("finish_date_before");
+
+        // build the URL to be fetched 
+        var fetchUrl = ''     
+        
+        var projectList = document.getElementById("projectList")
+
+        // cl_id.onchange = function() {
+
+        //     console.log("cl_id: " + cl_id.value);
+        //     console.log("cl_id type: " + typeof cl_id);
+        //     console.log("si_id: " + si_id.value);
+        //     console.log("cl_id.id: " + cl_id.id);
+        //     console.log("cl_id.value.id: " + cl_id.value.id);
+        // };
+        document.getElementById("filterBtn").onclick = function() {
+            fetchUrl = '/getprojects?'
+            
+            if (isNaN(Number(cl_id.value)) == false){
+                fetchUrl += 'cl_id=' + Number(cl_id.value) +"&"
+            };
+            if (isNaN(Number(si_id.value)) == false){
+                fetchUrl += 'si_id=' + Number(si_id.value) +"&"
+            };
+            if (isNaN(Number(st_id.value)) == false){
+                fetchUrl += 'st_id=' + Number(st_id.value) +"&"
+            };
+            if (isNaN(Number(tw_id.value)) == false){
+                fetchUrl += 'tw_id=' + Number(tw_id.value) +"&"
+            };
+            if (sda.value.length !== 0) {
+                fetchUrl += 'sda=' + sda.value +"&"
+            };
+            if (sdb.value.length !== 0) {
+                fetchUrl += 'sdb=' + sdb.value +"&"
+            };
+            if (fda.value.length !== 0) {
+                fetchUrl += 'fda=' + fda.value +"&"
+            };
+            if (fdb.value.length !== 0) {
+                fetchUrl += 'fdb=' + fdb.value
+            };
+
+
+            console.log("fetchURL" + fetchUrl)
+            
+            // Remove the current list of articles
+            var articles = document.querySelectorAll('article');
+            for (var i = 0; i < articles.length; i++) {
+                articles[i].remove()
+            }
+
+            fetch(fetchUrl)
+            .then(response => response.json())
+            .then(function (data) {
+                for (let project of data.projects) {
+                    let artHTML = '<article class="media content-section">';
+                    artHTML+= '<div class="media-body">';
+                    artHTML += '<div class="article-metadata">'
+                    artHTML +='<a class="mr-2" href="' + project.view_url + '">' + project.name + '</a>'
+                    artHTML +='<a class="btn btn-secondary btn-sm mt-1 mb-1" href ="' + project.update_url + '" style="float: right;">Update Project</a>'
+                    artHTML +='</div>'
+                    artHTML +='<p class="article-content">' + project.description + '</p>'
+                    artHTML +='</div>'
+                    artHTML +='</article>'
+                    projectList.innerHTML += artHTML;
+                }
+                
+            });
+
+        };
+
+    </script>
 {% endblock content %}

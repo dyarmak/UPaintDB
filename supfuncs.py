@@ -460,15 +460,6 @@ def build_filtered_project_list(client_id, site_id, status_id, typeOfWork_id, st
         # filter results 
         res = all_projects.query(query_string)
 
-    print(client_id)
-    print(site_id) 
-    print(status_id)
-    print(typeOfWork_id)
-    print(start_date_after)
-    print(start_date_before)
-    print(finish_date_after)
-    print(finish_date_before)
-
     # filter on start date
     # 4 possible combos
     if start_date_after and start_date_before==None:

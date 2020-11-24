@@ -1,12 +1,12 @@
 from logging import Filter
-from flask import Blueprint, render_template, url_for, flash, redirect, request, send_file
+from flask import Blueprint, render_template, url_for, flash, redirect, request, jsonify, send_file
 from ultradb import db
 from ultradb.projects.forms import NewProjectForm, UpdateProjectForm, AddRoomToProjectForm, AreaFilterForm, NewProjectSimpleForm, FilterProjectsForm
 from ultradb.models import Site, Area, Room, Project, Status, Worktype, Client
 
 from sqlalchemy import desc, and_
 
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from ultradb.auth.utils import roleAuth
 from ultradb.projects.utils import check_status_change
@@ -25,6 +25,8 @@ project_bp = Blueprint('project_bp', __name__)
 def project_list():
 
     filt = FilterProjectsForm()
+    # We do not "submit" this form.
+    # The Form object provides validation and controls the users input
 
     # Get the default list of projects
     def get_default_project_list():
@@ -64,58 +66,51 @@ def project_list():
         return prjs
     projects = get_default_project_list()
     
-    # If filter form is submitted
-    if filt.validate_on_submit():
-        
-        # Clear the list of projects
-        projects = []
 
-        if filt.client_id.data:
-            cl_id= filt.client_id.data.id
-        else: 
-            cl_id = None
-        
-        if filt.site_id.data:
-            si_id = filt.site_id.data.id
-        else:
-            si_id = None
-
-        if filt.status_id.data:
-            st_id = filt.status_id.data.id
-        else:
-            st_id = None
-        
-        if filt.typeOfWork_id.data:
-            tw_id = filt.typeOfWork_id.data.id
-        else:
-            tw_id = None
-        
-        if filt.start_date_after.data:
-            sda = filt.start_date_after.data
-        else:
-            sda = None
-        
-        if filt.start_date_before.data:
-            sdb = filt.start_date_before.data
-        else: 
-            sdb = None
-        
-        if filt.finish_date_after.data:
-            fda = filt.finish_date_after.data
-        else:
-            fda = None
-        
-        if filt.finish_date_after.data:
-            fdb = filt.finish_date_after.data
-        else:
-            fdb = None
-        
-        project_id_list = build_filtered_project_list(cl_id, si_id, st_id, tw_id, sda, sdb, fda, fdb)
-        
-
-        projects = Project.query.filter(Project.id.in_(project_id_list)).order_by(desc(Project.date_start)).all()
+    for project in projects:
+        project.view_url = (url_for('project_bp.view_project', cur_proj_id=project.id))
+        project.update_url = (url_for('project_bp.update_project', cur_proj_id=project.id))
+        project.update_simple_url = (url_for('project_bp.update_project_simple', cur_proj_id=project.id))
 
     return render_template('project_list.html', title='Project List', projects=projects, filt=filt, legend="Filter Project List")
+
+
+@project_bp.route("/getprojects")
+def clientProjects():
+    """
+    This route returns a JSON obj of the specific project data 
+    for projects that fit the filter criteria.
+    """
+    cl_id = request.args.get('cl_id', None)
+    si_id = request.args.get('si_id', None)
+    st_id = request.args.get('st_id', None)
+    tw_id = request.args.get('tw_id', None)
+    sda = request.args.get('sda', None)
+    sdb = request.args.get('sdb', None)
+    fda = request.args.get('fda', None)
+    fdb = request.args.get('fdb', None)
+
+    # Get all projects for the given form data
+    project_id_list = build_filtered_project_list(cl_id, si_id, st_id, tw_id, sda, sdb, fda, fdb)
+    projects = Project.query.filter(Project.id.in_(project_id_list)).order_by(desc(Project.date_start)).all()
+
+    # Create an empty list
+    projectArray = []
+    # go through returned brands and append as obj to list
+    for project in projects:
+        projectObj = {}
+        projectObj['id'] = project.id 
+        projectObj['name'] = project.name
+        projectObj['view_url'] = (url_for('project_bp.view_project', cur_proj_id=project.id))
+        if current_user.access_level ==7:
+            projectObj['update_url'] = (url_for('project_bp.update_project', cur_proj_id=project.id))
+        elif current_user.access_level ==5:
+            projectObj['update_url'] = (url_for('project_bp.update_project_simple', cur_proj_id=project.id))
+        projectObj['description'] = project.description
+        projectArray.append(projectObj)
+    # Return 'brands' of given supplier as json data
+    return jsonify({'projects' : projectArray})
+
 
 @project_bp.route("/newprojectsimple", methods=['GET', 'POST'])
 @login_required
