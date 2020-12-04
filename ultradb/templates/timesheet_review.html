@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<table>
+    <tr>
+        <th>Date Of Work</th>
+        <th>Emp Name</th>
+        <th>Hours</th>
+        <th>Project Name</th>
+        <th>Employee Comment</th>
+        <th>Approved?</th>
+    </tr>
+    {% for ts in tss %}
+        {% if ts.hours >0 %}
+        <tr>
+            <td>{{ ts.dateOfWork.strftime('%a, %B %d, %Y') }}</td>
+            <td>{{ ts.user.first().fName }}</td>
+            <td>{{ ts.hours }}</td>
+            <td>{{ ts.project.first().name }}</td>
+            <td>{{ ts.comment }}</td>
+            <td></td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+
+{% endblock content %}

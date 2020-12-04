@@ -19,7 +19,6 @@ class TimesheetForm(FlaskForm):
     project_id = QuerySelectField('Select Project you worked on', query_factory=project_query, get_label='name')
     hours = FloatField('Hours worked today on selected project')
     comment = StringField('What work did you do')
-    isNotWorkDay = BooleanField('Non-work day', default=False)
     completed = BooleanField('All hour for this day?', default=False)
     submit = SubmitField('Add Hours to this Project')
 
@@ -29,14 +28,8 @@ class TimesheetForm(FlaskForm):
                 raise ValidationError('You cannot enter negative hours')
             elif(hours.data > 12):
                 raise ValidationError('A maximum of 12 hours can be charged at once')
-
-    # Check that if hours == 0, check isNotWorkDay box
-    def validate_isNotWorkDay(self, isNotWorkDay):
-        if(self.isNotWorkDay.data == False and self.hours.data <= 0):
-            raise ValidationError('If you did not work today, please check the Box')
-    
-    # Only check the comment field length if isNotWorkDay == False
+   
+    # Only check the comment field length
     def validate_comment(self, comment):
-        if (self.isNotWorkDay.data == False):
-            if (len(self.comment.data) < 5) or len(self.comment.data) > 200:
-                raise ValidationError('Please enter a comment between 5 and 200 characters, unless you did not work today.')
+        if (len(self.comment.data) < 5) or len(self.comment.data) > 200:
+            raise ValidationError('Please enter a comment between 5 and 200 characters, unless you did not work today.')

@@ -6,8 +6,29 @@ from flask_login import current_user, login_required
 from sqlalchemy import desc, and_
 from datetime import datetime, timedelta
 
+from ultradb.auth.utils import roleAuth
 
 timesheet_bp = Blueprint('timesheet_bp', __name__)
+
+# Display Timesheet Entries
+@timesheet_bp.route("/timesheet/adminReview", methods=['GET', 'POST'])
+@login_required
+def timesheet_review():
+    # Must be Admin
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
+
+    users = User.query.all()
+
+    # Get 30 day date range
+    startDate = datetime.now().date()
+    endDate = startDate-timedelta(days=90)
+
+    # Get the last 30 days worth of Timesheets
+    tss = Timesheet.query.filter(and_(Timesheet.dateOfWork <= startDate, Timesheet.dateOfWork >= endDate)).order_by(desc(Timesheet.dateOfWork))
+
+
+    return render_template('timesheet_review.html', title='View Timesheets', legend='View Timesheet', tss=tss)
 
 # Delete a Timesheet Entry
 @timesheet_bp.route("/timesheet/<int:ts_id>/delete", methods=['POST'])
@@ -46,7 +67,8 @@ def view_timesheet():
     tss = Timesheet.query.filter_by(user_id=user.id).order_by(desc(Timesheet.dateOfWork))
 
     if form.validate_on_submit():
-        tss = Timesheet.query.filter(and_(Timesheet.dateOfWork >= form.startDate.data, Timesheet.dateOfWork <= form.endDate.data)).order_by(desc(Timesheet.dateOfWork))
+        # apply the date range filter
+        tss = Timesheet.query.filter_by(user_id=user.id).filter(and_(Timesheet.dateOfWork >= form.startDate.data, Timesheet.dateOfWork <= form.endDate.data)).order_by(desc(Timesheet.dateOfWork))
 
 
     return render_template('timesheet.html', title='View Timesheets', legend='View Timesheet', tss=tss, user=user, form=form)
@@ -92,23 +114,17 @@ def add_timesheet():
             # now it is safe to set the form value. 
             form.dateOfWork.data = formDateValue
             
-            # If dateCurrentEntry is a weekend, set workDay=False    
-            if (formDateValue.weekday() >= 5):
-                form.isNotWorkDay.data = True
 
     if form.validate_on_submit():
         completed = form.completed.data 
         # completed = False # WAS the default value for a new entry.
         curUser = User.query.get(current_user.id)
         proj = Project.query.get(form.project_id.data.id)
-        # If box is checked, set day to completed
-        if(form.isNotWorkDay.data == True):
-            completed = True
             
         newTimesheet = Timesheet(dateSubmit=datetime.utcnow(), 
                                 dateOfWork=form.dateOfWork.data, project_id=form.project_id.data.id, 
                                 hours=form.hours.data, comment=form.comment.data,
-                                user_id=curUser.id, isNotWorkDay=form.isNotWorkDay.data, completed=completed)
+                                user_id=curUser.id, completed=completed)
         db.session.add(newTimesheet)
 
         # Add to project_timesheet table

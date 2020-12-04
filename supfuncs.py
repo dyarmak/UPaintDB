@@ -112,7 +112,7 @@ def get_proj_details(project_id):
     
     timesheetDF = timesheets.rename({"id":"timesheet_id", "completed":"day_completed"}, axis=1)
     timesheetDF = timesheetDF.merge(users, left_on='user_id', right_on='id')
-    timesheetDF = timesheetDF.drop(['id', 'user_id', 'isNotWorkDay'], axis=1)
+    timesheetDF = timesheetDF.drop(['id', 'user_id'], axis=1)
     
     projectForTimesheetDF = projectDF[['project_id', 'name', 'site_code', 'worktype']]
     projectForTimesheetDF = projectForTimesheetDF.rename({"name":"project_name"})

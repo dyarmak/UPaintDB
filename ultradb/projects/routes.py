@@ -24,55 +24,62 @@ project_bp = Blueprint('project_bp', __name__)
 @login_required
 def project_list():
 
+    # Create the filter form object.
     filt = FilterProjectsForm()
     # We do not "submit" this form.
     # The Form object provides validation and controls the users input
 
-    # Get the default list of projects
-    def get_default_project_list():
-        prjs = []
-        # Should apply a couple of sorts here, we'll build the list in our custom order
-        # First should be active projects, IE status_id=3
-        active = Project.query.filter_by(status_id=3).order_by(desc(Project.date_start)).all()
-        for item in active:
-            prjs.append(item)
-        # then Painting Complete, IE status_id=4
-        paintComplete = Project.query.filter_by(status_id=4).all()
-        for item in paintComplete:
-            prjs.append(item)
-        # then we want to get the upcoming and quoted IE status_id = 1||2
-        upcoming = Project.query.filter_by(status_id=1).all()
-        for item in upcoming:
-            prjs.append(item)    
+    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+    # * Below is the old, no JS way of loading the data.            * #
+    # * Instead, window.onload() queries the /getprojects route     * #
+    # * and fills <div class="project_list"> with project articles  * #
+    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+
+    # # Get the default list of projects
+    # def get_default_project_list():
+    #     prjs = []
+    #     # Should apply a couple of sorts here, we'll build the list in our custom order
+    #     # First should be active projects, IE status_id=3
+    #     active = Project.query.filter_by(status_id=3).order_by(desc(Project.date_start)).all()
+    #     for item in active:
+    #         prjs.append(item)
+    #     # then Painting Complete, IE status_id=4
+    #     paintComplete = Project.query.filter_by(status_id=4).all()
+    #     for item in paintComplete:
+    #         prjs.append(item)
+    #     # then we want to get the upcoming and quoted IE status_id = 1||2
+    #     upcoming = Project.query.filter_by(status_id=1).all()
+    #     for item in upcoming:
+    #         prjs.append(item)    
         
-        quoted = Project.query.filter_by(status_id=2).all()
-        for item in quoted:
-            prjs.append(item)
-        # then paused, IE status_id=6
-        paused = Project.query.filter_by(status_id=6).all()
-        for item in paused:
-            prjs.append(item)
+    #     quoted = Project.query.filter_by(status_id=2).all()
+    #     for item in quoted:
+    #         prjs.append(item)
+    #     # then paused, IE status_id=6
+    #     paused = Project.query.filter_by(status_id=6).all()
+    #     for item in paused:
+    #         prjs.append(item)
 
-        # then invoiced, IE status_id=5, needs to be sorted by date completed
-        invoiced = Project.query.filter_by(status_id=5).order_by(Project.date_finished.desc()).all()
-        for item in invoiced:
-            prjs.append(item)
+    #     # then invoiced, IE status_id=5, needs to be sorted by date completed
+    #     invoiced = Project.query.filter_by(status_id=5).order_by(Project.date_finished.desc()).all()
+    #     for item in invoiced:
+    #         prjs.append(item)
 
-        # then finally cancelled, IE status_id=7
-        cancelled = Project.query.filter_by(status_id=7).all()
-        for item in cancelled:
-            prjs.append(item)
-        # prjs = Project.query.order_by(Project.status_id.desc()).all()
-        return prjs
-    projects = get_default_project_list()
+    #     # then finally cancelled, IE status_id=7
+    #     cancelled = Project.query.filter_by(status_id=7).all()
+    #     for item in cancelled:
+    #         prjs.append(item)
+    #     # prjs = Project.query.order_by(Project.status_id.desc()).all()
+    #     return prjs
+    # projects = get_default_project_list()
     
 
-    for project in projects:
-        project.view_url = (url_for('project_bp.view_project', cur_proj_id=project.id))
-        project.update_url = (url_for('project_bp.update_project', cur_proj_id=project.id))
-        project.update_simple_url = (url_for('project_bp.update_project_simple', cur_proj_id=project.id))
+    # for project in projects:
+    #     project.view_url = (url_for('project_bp.view_project', cur_proj_id=project.id))
+    #     project.update_url = (url_for('project_bp.update_project', cur_proj_id=project.id))
+    #     project.update_simple_url = (url_for('project_bp.update_project_simple', cur_proj_id=project.id))
 
-    return render_template('project_list.html', title='Project List', projects=projects, filt=filt, legend="Filter Project List")
+    return render_template('project_list.html', title='Project List', filt=filt, legend="Filter Project List")
 
 
 @project_bp.route("/getprojects")
@@ -81,6 +88,7 @@ def clientProjects():
     This route returns a JSON obj of the specific project data 
     for projects that fit the filter criteria.
     """
+    # Grab the ?params from the URL, default None if missing
     cl_id = request.args.get('cl_id', None)
     si_id = request.args.get('si_id', None)
     st_id = request.args.get('st_id', None)

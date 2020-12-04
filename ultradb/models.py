@@ -101,7 +101,6 @@ class Timesheet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     hours = db.Column(db.Float, nullable=False, default=0)
-    isNotWorkDay = db.Column(db.Boolean) # Mon-Fri = False, Sat and Sun = True
     comment = db.Column(db.String(200))
     completed = db.Column(db.Boolean) # Flag for a completed work day
 
@@ -141,25 +140,7 @@ class Site(db.Model):
     def __str__(self):
         return f"{self.name} ({self.code})"
 
-# Defines an are within a site
-class Area(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    code = db.Column(db.String(10), nullable=False)
-    site_id = db.Column(db.Integer, db.ForeignKey('site.id'),
-                          nullable=False)
-    building = db.Column(db.String(100), nullable=False) # should probably have no default
-    level = db.Column(db.String(2), nullable=False) # should probably have no default
-    descriptor = db.Column(db.Text)
-    color_sheets = db.relationship('ColorSheet', backref='color', lazy=True)
-    color_sheet = db.Column(db.String(40), nullable=False, default='default_color_sheet.jpg')
-    rooms = db.relationship('Room', backref='area', lazy=True)
 
-    def __repr__(self):
-        return f"<Area '{self.name} - {self.code}>"
-    
-    def __str__(self):
-        return f"{self.name} ({self.code})"
 
 
 class ColorSheet(db.Model):
@@ -170,30 +151,6 @@ class ColorSheet(db.Model):
 
     def __repr__(self):
         return f"ColorSheet('{self.area_id}', '{self.name}')"
-
-
-# Defines a room within an area
-class Room(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    bm_id = db.Column(db.String(25))
-    name = db.Column(db.String(100), nullable=False)
-    location = db.Column(db.String(50))
-    description = db.Column(db.String(100))
-    orig_paint_date = db.Column(db.DateTime)    # Create a column called orig_paint_date and give it the same values as date_last_paint
-    date_last_paint = db.Column(db.DateTime)    # date_last_paint will only store the date of the most recent paint job. 
-    freq = db.Column(db.Integer)
-    date_next_paint = db.Column(db.DateTime)    # Calculated field 
-    site_id = db.Column(db.Integer, db.ForeignKey('site.id'),
-                          nullable=False)
-    # We get this information through the relationship with area
-    # building = db.Column(db.String(30))
-    # level = db.Column(db.Integer)
-    area_id = db.Column(db.Integer, db.ForeignKey('area.id'),
-                          nullable=False)
-    glaccount = db.Column(db.String(50))
-
-    def __repr__(self):
-        return f"Room('{self.bm_id}', '{self.name}', '{self.site_id},' '{self.area_id}')"
 
 
 # Defines a type of project
@@ -235,13 +192,61 @@ project_timesheet = db.Table('project_timesheet',
     db.Column('timesheet_id', db.Integer, db.ForeignKey('timesheet.id'), primary_key=True) 
 )
 
+
+# Defines an are within a site
+class Area(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    code = db.Column(db.String(10), nullable=False)
+    site_id = db.Column(db.Integer, db.ForeignKey('site.id'),
+                          nullable=False)
+    building = db.Column(db.String(100), nullable=False) # should probably have no default
+    level = db.Column(db.String(2), nullable=False) # should probably have no default
+    descriptor = db.Column(db.Text)
+    color_sheets = db.relationship('ColorSheet', backref='color', lazy=True)
+    color_sheet = db.Column(db.String(40), nullable=False, default='default_color_sheet.jpg')
+    # An Area has many rooms
+    rooms = db.relationship('Room', backref='area', lazy=True) # one-to-many relationship
+
+    def __repr__(self):
+        return f"<Area '{self.name} - {self.code}>"
+    
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+# Defines a room within an area
+class Room(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    bm_id = db.Column(db.String(25))
+    name = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(50))
+    description = db.Column(db.String(100))
+    orig_paint_date = db.Column(db.DateTime)    # Create a column called orig_paint_date and give it the same values as date_last_paint
+    date_last_paint = db.Column(db.DateTime)    # date_last_paint will only store the date of the most recent paint job. 
+    freq = db.Column(db.Integer)
+    date_next_paint = db.Column(db.DateTime)    # Calculated field 
+    site_id = db.Column(db.Integer, db.ForeignKey('site.id'),
+                          nullable=False)
+
+    # A room is in 1 Area
+    area_id = db.Column(db.Integer, db.ForeignKey('area.id'),
+                          nullable=False)
+    glaccount = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f"Room('{self.bm_id}', '{self.name}', '{self.site_id},' '{self.area_id}')"
+
 # Defines a Project
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     site_id = db.Column(db.Integer, db.ForeignKey('site.id'))
-    area_list = db.relationship('Area', secondary=project_area, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Project can have many areas
-    room_list = db.relationship('Room', secondary=project_room, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Project can have many Rooms
+    # A project is generally part of just 1 area, but sometimes it could span multiple areas.
+    # Project can have many areas
+    area_list = db.relationship('Area', secondary=project_area, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Many-to-Many Relationship
+    # Project can have many Rooms
+    room_list = db.relationship('Room', secondary=project_room, backref=db.backref('projects', lazy='dynamic'), lazy='dynamic') # Many-to-Many Relationship
+    
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
     typeOfWork_id = db.Column(db.Integer, db.ForeignKey('worktype.id'))
     name = db.Column(db.String(50), nullable=False)

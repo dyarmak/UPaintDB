@@ -40,12 +40,12 @@
 {% endif %}
 <div id='projectList'>
 
-
+{% if projects  %}
     {% for project in projects %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" target="_blank" href="{{ project.view_url }}">{{ project.name }}</a>
+              <a class="mr-2" href="{{ project.view_url }}">{{ project.name }}</a>
               {% if current_user.access_level ==7 %}
               <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ project.update_url }}" style="float: right;">Update Project</a>
               {% elif current_user.access_level == 5 %}
@@ -56,6 +56,7 @@
           </div>
         </article>
     {% endfor %}
+{% endif %}
 
 </div>
 
@@ -83,7 +84,8 @@
         //     console.log("cl_id.id: " + cl_id.id);
         //     console.log("cl_id.value.id: " + cl_id.value.id);
         // };
-        document.getElementById("filterBtn").onclick = function() {
+
+        function get_projects(){
             fetchUrl = '/getprojects?'
             
             if (isNaN(Number(cl_id.value)) == false){
@@ -139,6 +141,9 @@
             });
 
         };
+        window.onload = get_projects;
+        document.getElementById("filterBtn").onclick = get_projects;
+
 
     </script>
 {% endblock content %}

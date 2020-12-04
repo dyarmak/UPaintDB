@@ -107,21 +107,6 @@
             </div>
 
             <div class="form-check">
-                {% if form.isNotWorkDay.errors %}
-                    {{ form.isNotWorkDay(class="form-check-input is-invalid") }}
-                    {{ form.isNotWorkDay.label(class="form-check-label") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.isNotWorkDay.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.isNotWorkDay(class="form-check-input") }}
-                    {{ form.isNotWorkDay.label(class="form-check-label") }}
-                {% endif %}
-            </div>
-
-            <div class="form-check">
                 {% if form.completed.errors %}
                     {{ form.completed(class="form-check-input is-invalid") }}
                     {{ form.completed.label(class="form-check-label") }}

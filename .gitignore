@@ -15,7 +15,6 @@ HowToUpdate Heroku.txt
 Data Migrations.txt
 How to push localDB to Heroku.txt
 
-db_refresh.py
 
 *.pyc
 *.ipynb

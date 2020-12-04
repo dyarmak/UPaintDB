@@ -15,7 +15,7 @@ def addTS(emp, dateStr, proj, hrs, cmt):
         dateSubmit=dt, user_id=emp.id, 
         project_id=proj.id, hours=hrs, 
         comment=cmt, 
-        isNotWorkDay=False, completed=True)
+        completed=True)
         
         db.session.add(ts)
         ts.user.append(emp)

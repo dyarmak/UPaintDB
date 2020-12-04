@@ -21,6 +21,11 @@ def admincp():
     # get list of users
     users = User.query.all()
 
+    # We need to be able to change Users' attributes from the control panel. 
+    # Access Level and isEmployed 
+
+    # Review / Approve / Edit Employee Time Entries
+
     return render_template("admin_cp.html", title="Admin", users=users)
 
 # Register a new user
