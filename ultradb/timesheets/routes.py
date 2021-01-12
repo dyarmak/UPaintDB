@@ -45,11 +45,6 @@ def employee_hours_submit(weekno):
     return redirect(url_for('timesheet_bp.view_timesheet'))
 
 
-    
-
-
-
-
 # Delete a Timesheet Entry
 @timesheet_bp.route("/timesheet/<int:ts_id>/delete", methods=['POST'])
 @login_required

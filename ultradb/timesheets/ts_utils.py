@@ -10,7 +10,7 @@ from flask_mail import Message
 
 def send_payroll_email(user, subject, message):
     
-    msg = Message(subject, 
+    msg = Message(subject=subject, 
                   sender='ultrapaintdb@gmail.com', 
                   recipients=[user.email])
     msg.body = message
