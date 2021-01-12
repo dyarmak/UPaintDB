@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
   <H2 class="inline">{{ user.fName }}, below are your recent timesheet entries.</H2>
-  <a href="#" class="btn btn-success floatingRight">Review Week</a>
+  <a href="{{ url_for('timesheet_bp.employee_hours_review') }}" class="btn btn-success floatingRight">Review Week</a>
   <p>You may select a date range to filter your hours</p>
 
   <div class="content-section">
