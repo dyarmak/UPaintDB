@@ -35,11 +35,11 @@ def employee_hours_submit(weekno):
     # use the weekno to determine which to send
     if weekno == 0:
         sub, msg, m = timesheet_to_email(tsdf) 
-        send_payroll_email(user, sub, msg)
+        send_payroll_email(user, sub, m)
         flash('Hours sent to Steve via email. A copy has been sent to your inbox.', 'success')
     if weekno == 1:    
-        sub, msg, m2 = timesheet_to_email(tsdf, 1)
-        send_payroll_email(user, sub, msg)
+        sub, msg, m = timesheet_to_email(tsdf, 1)
+        send_payroll_email(user, sub, m)
         flash('Hours sent to Steve via email. A copy has been sent to your inbox.', 'success')
     
     return redirect(url_for('timesheet_bp.view_timesheet'))
