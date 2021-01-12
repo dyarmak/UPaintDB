@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+{% block filter %}
+
+{% endblock filter %}
+
 {% block content %}
 
 <table>
@@ -9,6 +13,7 @@
         <th>Project Name</th>
         <th>Employee Comment</th>
         <th>Approved?</th>
+        <th>Edit entry</th>
     </tr>
     {% for ts in tss %}
         {% if ts.hours >0 %}
@@ -18,7 +23,12 @@
             <td>{{ ts.hours }}</td>
             <td>{{ ts.project.first().name }}</td>
             <td>{{ ts.comment }}</td>
-            <td></td>
+            {% if ts.approved %}
+                <td><a href="{{ url_for('admin_bp.admin_unapprove', ts_id=ts.id) }}"><div class="btn btn-danger">Un-Approve</div></a></td>
+            {% else %}
+                <td><a href="{{ url_for('admin_bp.admin_approve', ts_id=ts.id) }}"><div class="btn btn-success">Approve</div></a></td>
+            {% endif %}
+            <td><a href="{{ url_for('admin_bp.admin_timesheet_update', ts_id=ts.id) }}"><div class="btn btn-info">Edit</div></a></td>
         </tr>
         {% endif %}
     {% endfor %}

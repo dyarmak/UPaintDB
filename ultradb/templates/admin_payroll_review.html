@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block filter %}
+
+{% endblock filter %}
+
+{% block content %}
+<h1>Review and Submit Payroll</h1>
+
+<div class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a href="#" class="btn btn-primary floatingRight">Send Email</a>
+            <h2>Hours Details Email</h2>
+        </div>
+        <div class="article-metadata">
+            <p><b>Subject:</b></p>
+            <p>{{ sub2 }}</p>
+        </div>
+        <p><b>Message Body:</b></p>
+        {% for line in msg2 %}
+            {{line}} <br />
+        {% endfor %}
+    </div>
+</div>
+
+<div class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a href="#" class="btn btn-primary floatingRight">Send Email</a>
+            <h2>Payroll Summary Email</h2>
+        </div>
+        <div class="article-metadata">
+            <p><b>Subject:</b></p>
+            <p>{{ sub1 }}</p>
+        </div>
+        <p><b>Message Body:</b></p>
+        {% for line in msg1 %}
+            {{line}}<br />
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock content %}

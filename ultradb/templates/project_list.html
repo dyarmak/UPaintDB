@@ -47,9 +47,9 @@
             <div class="article-metadata">
               <a class="mr-2" href="{{ project.view_url }}">{{ project.name }}</a>
               {% if current_user.access_level ==7 %}
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ project.update_url }}" style="float: right;">Update Project</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1 floatingRight" href ="{{ project.update_url }}">Update Project</a>
               {% elif current_user.access_level == 5 %}
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ project.update_simple_url }}" style="float: right;">Update Project</a> 
+              <a class="btn btn-secondary btn-sm mt-1 mb-1 floatingRight" href ="{{ project.update_simple_url }}">Update Project</a> 
               {% endif %}
             </div>
             <p class="article-content">{{ project.description }}</p>
@@ -130,7 +130,7 @@
                     artHTML+= '<div class="media-body">';
                     artHTML += '<div class="article-metadata">'
                     artHTML +='<a class="mr-2" href="' + project.view_url + '">' + project.name + '</a>'
-                    artHTML +='<a class="btn btn-secondary btn-sm mt-1 mb-1" href ="' + project.update_url + '" style="float: right;">Update Project</a>'
+                    artHTML +='<a class="btn btn-secondary btn-sm mt-1 mb-1 floatingRight" href ="' + project.update_url + '">Update Project</a>'
                     artHTML +='</div>'
                     artHTML +='<p class="article-content">' + project.description + '</p>'
                     artHTML +='</div>'

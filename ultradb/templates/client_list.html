@@ -6,7 +6,7 @@
             <div class="article-metadata">
               <H4>{{ client.name }}
               {% if current_user.access_level ==7 %}
-                <a class="btn btn-secondary btn-sm mt-1 mb-1" href ="{{ url_for('site_bp.update_client', cur_client_id=client.id) }}" style="float: right;">Update Client</a>
+                <a class="btn btn-secondary btn-sm mt-1 mb-1 floatingRight" href ="{{ url_for('site_bp.update_client', cur_client_id=client.id) }}">Update Client</a>
               {% endif %}
               </H4>
               </div>

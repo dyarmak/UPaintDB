@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Review your hours for submission</h1>
+
+<div class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <h2 class="inline">Your hours for most recent week</h2>
+            <a href="{{ url_for('timesheet_bp.employee_hours_submit', weekno=0) }}" class="btn btn-success floatingRight">Send As Email</a>
+        </div>
+        {% for line in msg %}
+            {{line}} <br />
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <h2 class="inline">Your hours for 1 week ago</h2>
+            <a href="{{ url_for('timesheet_bp.employee_hours_submit', weekno=1) }}" class="btn btn-success floatingRight">Send As Email</a>
+        </div>
+        {% for line in msg2 %}
+            {{line}} <br />
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

@@ -7,28 +7,48 @@ from sqlalchemy import desc, and_
 from datetime import datetime, timedelta
 
 from ultradb.auth.utils import roleAuth
+from ultradb.timesheets.ts_utils import send_payroll_email
 
 timesheet_bp = Blueprint('timesheet_bp', __name__)
 
-# Display Timesheet Entries
-@timesheet_bp.route("/timesheet/adminReview", methods=['GET', 'POST'])
+from ultradb.timesheets.ts_utils import get_timesheets, timesheet_to_email
+
+# Employee Hours Review
+@timesheet_bp.route("/timesheet/review", methods=['GET', 'POST'])
 @login_required
-def timesheet_review():
-    # Must be Admin
-    if not roleAuth('Admin'):
-        return redirect(url_for('main_bp.home'))
+def employee_hours_review():
+    # Get Timesheets as a DataFrame
+    tsdf = get_timesheets(current_user)
+    # Build the Most recent 2 weeks hours into an email message
+    sub, msg, m = timesheet_to_email(tsdf) 
+    sub2, msg2, m2 = timesheet_to_email(tsdf, 1)
 
-    users = User.query.all()
+    return render_template('timesheet_employee_review.html', title='Review Timesheet', legend='Review Timesheet', msg=msg, msg2=msg2)
 
-    # Get 30 day date range
-    startDate = datetime.now().date()
-    endDate = startDate-timedelta(days=90)
+@timesheet_bp.route("/timesheet/review/sendemail/<int:weekno>", methods=['GET', 'POST'])
+@login_required
+def employee_hours_submit(weekno):
+    user = current_user
+    # Get Timesheets as a DataFrame
+    tsdf = get_timesheets(current_user)
+    
+    # use the weekno to determine which to send
+    if weekno == 0:
+        sub, msg, m = timesheet_to_email(tsdf) 
+        send_payroll_email(user, sub, msg)
+        flash('Hours sent to Steve via email. A copy has been sent to your inbox.', 'success')
+    if weekno == 1:    
+        sub, msg, m2 = timesheet_to_email(tsdf, 1)
+        send_payroll_email(user, sub, msg)
+        flash('Hours sent to Steve via email. A copy has been sent to your inbox.', 'success')
+    
+    return redirect(url_for('timesheet_bp.view_timesheet'))
 
-    # Get the last 30 days worth of Timesheets
-    tss = Timesheet.query.filter(and_(Timesheet.dateOfWork <= startDate, Timesheet.dateOfWork >= endDate)).order_by(desc(Timesheet.dateOfWork))
+
+    
 
 
-    return render_template('timesheet_review.html', title='View Timesheets', legend='View Timesheet', tss=tss)
+
 
 # Delete a Timesheet Entry
 @timesheet_bp.route("/timesheet/<int:ts_id>/delete", methods=['POST'])
@@ -50,7 +70,7 @@ def complete_day(date):
     curUser_id = current_user.id
     user = User.query.get(curUser_id)
     # get all ts for user
-    tss = Timesheet.query.filter_by(user_id=user.id).filter_by(dateOfWork=date)
+    tss = Timesheet.query.filter_by(user_id=user.id).filter_by(date_of_work=date)
     for ts in tss:
         ts.completed = True
         db.session.commit()
@@ -64,11 +84,11 @@ def view_timesheet():
     form=TimesheetDateRangeForm()
     curUser_id = current_user.id
     user = User.query.get(curUser_id)
-    tss = Timesheet.query.filter_by(user_id=user.id).order_by(desc(Timesheet.dateOfWork))
+    tss = Timesheet.query.filter_by(user_id=user.id).order_by(desc(Timesheet.date_of_work))
 
     if form.validate_on_submit():
         # apply the date range filter
-        tss = Timesheet.query.filter_by(user_id=user.id).filter(and_(Timesheet.dateOfWork >= form.startDate.data, Timesheet.dateOfWork <= form.endDate.data)).order_by(desc(Timesheet.dateOfWork))
+        tss = Timesheet.query.filter_by(user_id=user.id).filter(and_(Timesheet.date_of_work >= form.startDate.data, Timesheet.date_of_work <= form.endDate.data)).order_by(desc(Timesheet.date_of_work))
 
 
     return render_template('timesheet.html', title='View Timesheets', legend='View Timesheet', tss=tss, user=user, form=form)
@@ -79,7 +99,8 @@ def view_timesheet():
 @login_required
 def add_timesheet():
     form=TimesheetForm()
-    project_query = Project.query.filter(Project.status_id.in_([1,2,3,4]))
+    # Projects ordered most recent start_date first
+    project_query = Project.query.filter(Project.status_id.in_([1,2,3,4])).order_by(desc(Project.date_start))
     form.project_id.query = project_query
     user = User.query.get(current_user.id)
     # Need to initialize this to prevent crashes
@@ -90,21 +111,21 @@ def add_timesheet():
         # Check for an umcompleted day
         uncompleteDay = Timesheet.query.filter_by(user_id = user.id).filter_by(completed=False).first()
         
-        # IF there is an uncompleted day we set the dateOfWork field in the form to be that date
+        # IF there is an uncompleted day we set the date_of_work field in the form to be that date
         if uncompleteDay:
-            dateLastEntry = uncompleteDay.dateOfWork
-            form.dateOfWork.data = dateLastEntry
+            dateLastEntry = uncompleteDay.date_of_work
+            form.date_of_work.data = dateLastEntry
             # Query and display the other entries on this uncomplete day
-            prevts = Timesheet.query.filter_by(user_id = user.id).filter_by(dateOfWork=dateLastEntry)
+            prevts = Timesheet.query.filter_by(user_id = user.id).filter_by(date_of_work=dateLastEntry)
             
 
         # If no uncompleteDay, we check for the last entry.
         else:
-            lastEntry = Timesheet.query.filter_by(user_id = user.id).filter_by(completed=True).order_by(desc(Timesheet.dateOfWork)).first() 
+            lastEntry = Timesheet.query.filter_by(user_id = user.id).filter_by(completed=True).order_by(desc(Timesheet.date_of_work)).first() 
             
             #  If there is a lastEntry, we can set the form value to the day after the most recent entry
             if lastEntry:
-                dateLastEntry = lastEntry.dateOfWork
+                dateLastEntry = lastEntry.date_of_work
                 formDateValue = dateLastEntry + timedelta(days=1)
             
             # in the event of a new hire, lastEntry will return None, so we will need to set the form value to today
@@ -112,7 +133,7 @@ def add_timesheet():
                 formDateValue = datetime.now().date()
             
             # now it is safe to set the form value. 
-            form.dateOfWork.data = formDateValue
+            form.date_of_work.data = formDateValue
             
 
     if form.validate_on_submit():
@@ -121,8 +142,8 @@ def add_timesheet():
         curUser = User.query.get(current_user.id)
         proj = Project.query.get(form.project_id.data.id)
             
-        newTimesheet = Timesheet(dateSubmit=datetime.utcnow(), 
-                                dateOfWork=form.dateOfWork.data, project_id=form.project_id.data.id, 
+        newTimesheet = Timesheet(date_submit=datetime.utcnow(), 
+                                date_of_work=form.date_of_work.data, project_id=form.project_id.data.id, 
                                 hours=form.hours.data, comment=form.comment.data,
                                 user_id=curUser.id, completed=completed)
         db.session.add(newTimesheet)
@@ -139,6 +160,6 @@ def add_timesheet():
         else:
             return redirect(url_for('timesheet_bp.view_timesheet'))
 
-    return render_template('add_timesheet.html', title='Enter Your Time', legend='Enter Your Time', tss=prevts, dateLastEntry=dateLastEntry, form=form, user=user)
+    return render_template('timesheet_add.html', title='Enter Your Time', legend='Enter Your Time', tss=prevts, dateLastEntry=dateLastEntry, form=form, user=user)
 
 

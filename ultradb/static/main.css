@@ -40,7 +40,34 @@ body {
     color: #428bca;
     text-decoration: none;
   }
+
+  a.approve {
+    color: #FFFFFF;
+  }
+
+  a.unapprove {
+    color: #FFFFFF;
+  }
   
+  .floatingRight {
+    float: right;
+    margin-bottom: 10px;
+  }
+
+  .requiredField {
+    font-size: 80%;
+    color: red;
+  }
+
+  .roomTable {
+    width:100%; 
+    border:1px solid black;
+  }
+
+  .inline {
+    display: inline;
+  }
+
   .article-content {
     white-space: pre-line;
   }
@@ -92,6 +119,6 @@ body {
     background-color: rgb(250, 250, 250);
   }
   tr:nth-child(even) {
-    background-color: #a3a8ac;
+    background-color: #ccd0d3;
     color: #000000;
   }

@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, ValidationError
 from ultradb.models import Project
 
 def project_query():
-    Project.query
+    return Project.query
 
 class TimesheetDateRangeForm(FlaskForm):
     startDate = DateField('Start Date', validators=[DataRequired()], format='%Y-%m-%d')
@@ -15,11 +15,12 @@ class TimesheetDateRangeForm(FlaskForm):
     submit = SubmitField('Filter timesheets to date range')
 
 class TimesheetForm(FlaskForm):
-    dateOfWork = DateField('Date of work. Format in YYYY/MM/DD', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.utcnow())
+    date_of_work = DateField('Date of work. Format in YYYY/MM/DD', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.utcnow())
     project_id = QuerySelectField('Select Project you worked on', query_factory=project_query, get_label='name')
     hours = FloatField('Hours worked today on selected project')
     comment = StringField('What work did you do')
     completed = BooleanField('All hour for this day?', default=False)
+    update = SubmitField('Update Timesheet Details')
     submit = SubmitField('Add Hours to this Project')
 
     def validate_hours(self, hours):

@@ -6,7 +6,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">{{ legend }}</legend>
             <div class="form-group">
-                {{ form.site_id.label(class="form-control-label") }}<span style="font-size:80%;color:red;"><sup>&starf;</sup></span>
+                {{ form.site_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.site_id.errors %}
                     {{ form.site_id(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -19,7 +19,7 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                    {{ form.area_id.label(class="form-control-label") }}<span style="font-size:80%;color:red;"><sup>&starf;</sup></span>
+                    {{ form.area_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                     {% if form.area_id.errors %}
                         {{ form.area_id(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -33,7 +33,7 @@
                 </div>
 
             <div class="form-group">
-                {{ form.name.label(class="form-control-label") }}<span style="font-size:80%;color:red;"><sup>&starf;</sup></span>
+                {{ form.name.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.name.errors %}
                     {{ form.name(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -111,7 +111,7 @@
                     {{ form.glaccount(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-            <span style="font-size:80%;color:red;"><sup>&starf;</sup></span> required
+            <span class="requiredField"><sup>&starf;</sup></span> required
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}

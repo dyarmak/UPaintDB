@@ -3,7 +3,7 @@
 <div class="content-section">
     <H1>Project: {{ proj.name }}</H1>
     {% if current_user.access_level == 7 %}
-        <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('project_bp.excel_project', cur_proj_id=proj.id) }}" style="float: right;">Download Excel</a>
+        <a class="btn btn-primary btn-sm mt-1 mb-1 floatingRight" href="{{ url_for('project_bp.excel_project', cur_proj_id=proj.id) }}">Download Excel</a>
     {% endif %}
     {% if client%}
         <b>Client:</b> {{ client.name }}
@@ -49,7 +49,7 @@
         <H5>Labour breakdown for this project</H5>
         {% if tss %}
             {% for ts in tss %}
-                <ul>{{ ts.dateOfWork.strftime('%B %d, %Y') }} <b>{{ ts.user.first().fName }}</b> worked {{ ts.hours }} hours</ul>
+                <ul>{{ ts.date_of_work.strftime('%B %d, %Y') }} <b>{{ ts.user.first().fName }}</b> worked {{ ts.hours }} hours</ul>
             {% endfor %}
         {% endif %}
     </div>

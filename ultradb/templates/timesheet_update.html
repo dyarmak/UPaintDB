@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <H3>Editting Timesheet Entry for: {{ user.username }}</H3>
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+
+            <legend class="border-bottom mb-4"></legend>
+
+            {{ render_field(form.date_of_work) }}
+
+            {{ render_field(form.project_id) }}
+
+            {{ render_field(form.hours) }}
+
+            {{ render_field(form.comment) }}
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.update(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

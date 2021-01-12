@@ -93,6 +93,7 @@ def create_app(config_class=Config):
     from ultradb.projects.routes import project_bp
     from ultradb.sites.routes import site_bp
     from ultradb.timesheets.routes import timesheet_bp 
+    from ultradb.admin.routes import admin_bp 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(paint_bp)
@@ -100,6 +101,7 @@ def create_app(config_class=Config):
     app.register_blueprint(project_bp)
     app.register_blueprint(site_bp)
     app.register_blueprint(timesheet_bp)
+    app.register_blueprint(admin_bp)
 
     return app
 

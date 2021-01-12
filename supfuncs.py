@@ -119,7 +119,7 @@ def get_proj_details(project_id):
     
     timesheetDF = timesheetDF.merge(projectForTimesheetDF, on="project_id")
 
-    tsDF = timesheetDF[['dateOfWork', 'username', 'hours', 'comment', 'name', 'project_id', 'site_code', 'dateSubmit']]
+    tsDF = timesheetDF[['date_of_work', 'username', 'hours', 'comment', 'name', 'project_id', 'site_code', 'date_submit']]
 
     totalHrs = tsDF.hours.sum()
 

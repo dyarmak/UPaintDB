@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-  <H2>{{ user.fName }}, these are your recent timesheet entries.</H2>
-  <p>Select a date range to view hours for</p>
-
+  <H2 class="inline">{{ user.fName }}, below are your recent timesheet entries.</H2>
+  <a href="#" class="btn btn-success floatingRight">Review Week</a>
+  <p>You may select a date range to filter your hours</p>
 
   <div class="content-section">
       <form method="POST" action="">
@@ -50,7 +50,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">   
-              <p>On {{ ts.dateOfWork.strftime('%A, %B %d, %Y') }}</p>
+              <p>On {{ ts.date_of_work.strftime('%A, %B %d, %Y') }}</p>
             </div>
             <p><b>You charged:</b> {{ ts.hours }} hours <b>@ Project:</b> {{ ts.project.first().name }}</p>
             <p class="article-content"><b>Comment:</b> {{ ts.comment }}</p>

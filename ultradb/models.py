@@ -96,13 +96,18 @@ class Client(db.Model):
 # Defines a timesheet entry
 class Timesheet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    dateOfWork = db.Column(db.Date, nullable=False)
-    dateSubmit = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_of_work = db.Column(db.Date, nullable=False)
+    date_submit = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     hours = db.Column(db.Float, nullable=False, default=0)
     comment = db.Column(db.String(200))
     completed = db.Column(db.Boolean) # Flag for a completed work day
+    approved = db.Column(db.Boolean, default=False, nullable=False) # Flag for Steve's approval of hours and project
+    # When doing a refresh, you need to run the following
+    # op.execute('UPDATE timesheet SET approved = false')
+    # op.alter_column('timesheet', 'approved', nullable=False)
+    # for it to back fill with false.
 
     def __repr__(self):
         return f"Timesheet('{self.id}', '{self.user_id}', '{self.project_id}')"
@@ -249,7 +254,7 @@ class Project(db.Model):
     
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
     typeOfWork_id = db.Column(db.Integer, db.ForeignKey('worktype.id'))
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(250))
     date_start = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_finished = db.Column(db.DateTime)

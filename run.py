@@ -10,7 +10,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 # This allows me to type into the command line:
-# (venv) PS C:\..\UltraSiteDB> flask shell
+# (venv) PS C:\..\UPaintDB> flask shell
 # and it will do the imports of the items listed in the dict below
 @app.shell_context_processor
 def make_shell_context():

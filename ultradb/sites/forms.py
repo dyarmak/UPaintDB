@@ -4,13 +4,18 @@ from wtforms import StringField, SubmitField, IntegerField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Optional
-from ultradb.models import Site, Area
+from ultradb.models import Site, Area, Client
+
+
+def client_query():
+    return Client.query
 
 
 class RoomSearchForm(FlaskForm):
     choices = [('bm_id', 'bm_id'),
                ('name', 'name')]
 
+    client = QuerySelectField('Select a Client', )
     select = SelectField('Search for Rooms by:', choices=choices)
     search = StringField('')
     

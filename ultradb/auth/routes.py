@@ -10,24 +10,6 @@ from ultradb.auth.utils import save_thumbnail, send_reset_email, send_welcome_em
 auth_bp = Blueprint('auth_bp', __name__)
 
 
-# Admin Control Panel
-@auth_bp.route("/admin")
-@login_required
-def admincp():
-    # Must be Admin
-    if not roleAuth('Admin'):
-        return redirect(url_for('main_bp.home'))
-
-    # get list of users
-    users = User.query.all()
-
-    # We need to be able to change Users' attributes from the control panel. 
-    # Access Level and isEmployed 
-
-    # Review / Approve / Edit Employee Time Entries
-
-    return render_template("admin_cp.html", title="Admin", users=users)
-
 # Register a new user
 @auth_bp.route("/register", methods=['GET', 'POST'])
 @login_required

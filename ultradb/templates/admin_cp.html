@@ -1,4 +1,4 @@
-{% extends "layout_admin.html" %}
+{% extends "layout.html" %}
 {% block content %}
 
 <h1>Admin Control Panel</h1>
@@ -15,7 +15,7 @@
 <h3>Users:</h3>
 {% for user in users %}
 <div>
-    <h5>{{ user.fName }} {{ user.lName }}, {{ user.email }}</h5>
+    <h5>{{ user.fName }} {{ user.lName }}, {{ user.email }}, access level = {{ user.access_level }}</h5>
 </div>
 {% endfor %}
 

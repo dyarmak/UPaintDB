@@ -15,7 +15,7 @@ HowToUpdate Heroku.txt
 Data Migrations.txt
 How to push localDB to Heroku.txt
 
-
+*.sql
 *.pyc
 *.ipynb
 *.xlsx

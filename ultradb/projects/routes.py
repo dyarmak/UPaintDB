@@ -141,7 +141,7 @@ def new_project_simple():
         db.session.add(project)
         db.session.commit()
         flash('New Project Added Successfully!', 'success')
-        return redirect(url_for('main_bp.home'))   
+        return redirect(url_for('projects_bp.projects'))   
     return render_template('project_new_simple.html', title='Add New Project', form=form, legend='Add a New Project')
 
 # Add a new Project

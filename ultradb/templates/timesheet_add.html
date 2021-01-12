@@ -8,7 +8,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">   
-              <p>On {{ ts.dateOfWork.strftime('%A, %B %d, %Y') }} <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+              <p>On {{ ts.date_of_work.strftime('%A, %B %d, %Y') }} <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
 
             </div>
             <p><b>You charged:</b> {{ ts.hours }} hours <b>@ Project:</b> {{ ts.project.first().name }}</p>
@@ -44,23 +44,25 @@
     <br>
 {% endif %}
 
+<h2 class="inline">Timesheet Entry Form</h2>
+<a href="#" class="btn btn-success floatingRight">Review Week</a>
+
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{ user.fName }} please {{ legend }}</legend>
-
+            <legend class="border-bottom mb-4">{{ user.fName }} please {{ legend }} below</legend>
             <div class="form-group">
-                {{ form.dateOfWork.label(class="form-control-label") }}
-                {% if form.dateOfWork.errors %}
-                    {{ form.dateOfWork(class="form-control form-control-lg is-invalid") }}
+                {{ form.date_of_work.label(class="form-control-label") }}
+                {% if form.date_of_work.errors %}
+                    {{ form.date_of_work(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.dateOfWork.errors %}
+                        {% for error in form.date_of_work.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.dateOfWork(class="form-control form-control-lg") }}
+                    {{ form.date_of_work(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
 
