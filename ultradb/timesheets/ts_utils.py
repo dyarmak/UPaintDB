@@ -120,13 +120,13 @@ def timesheet_to_email(tsdf, weeksBack=0):
             lastDate = dfDict[user].date_of_work.max()
             weekEnded = (lastDate + datetime.timedelta(days=(5 -
                                                      lastDate.weekday()))).strftime("%a %b %d, %Y")
-            subject = "Hours for the week ended " + weekEnded + "\n"
+            subject = "Hours for the week ended " + weekEnded
             msg = "Details of Hours Worked for week ended " + weekEnded + "\n"
         else:
             lastDate = datetime.date.today()
             weekEnded = (lastDate + datetime.timedelta(days=(5 -
                                                      lastDate.weekday()))).strftime("%a %b %d, %Y")
-            subject = "Hours for the week ended " + weekEnded + "\n"
+            subject = "Hours for the week ended " + weekEnded
             msg = "Details of Hours Worked for week ended " + weekEnded + "\n"
 
     # create a blank dict to store the weeks timesheet entries. 
@@ -195,13 +195,13 @@ def timesheet_to_email_summarized(tsdf, weeksBack=0):
             lastDate = dfDict[user].date_of_work.max()
             weekEnded = (lastDate + datetime.timedelta(days=(5 -
                                                              lastDate.weekday()))).strftime("%a %b %d, %Y")
-            subject = "Summary of hours for the week ended " + weekEnded + "\n"
+            subject = "Summary of hours for the week ended " + weekEnded
             msg = "Summary of hours worked for week ended " + weekEnded + "\n"
         else:
             lastDate = datetime.date.today()
             weekEnded = (lastDate + datetime.timedelta(days=(5 -
                                                              lastDate.weekday()))).strftime("%a %b %d, %Y")
-            subject = "Summary of hours for the week ended " + weekEnded + "\n"
+            subject = "Summary of hours for the week ended " + weekEnded
             msg = "Summary of hours worked for week ended " + weekEnded + "\n"
 
     # blank dict to store the sum of the weeks timesheet entries.
