@@ -74,7 +74,7 @@ def roleAuth(role):
         level = 5
     elif role == 'Employee':
         level = 3
-    elif role == 'User':
+    elif role == 'Client':
         level = 1
     else:
         level = 0

@@ -1,5 +1,6 @@
 import os
 import os.path
+from ultradb.auth.utils import roleAuth
 # from sqlalchemy import func
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
 from ultradb.sites.forms import UpdateAreaForm, NewSiteForm, NewAreaForm, RoomForm, NewClientForm, RoomSearchForm, UpdateClientForm
@@ -18,7 +19,9 @@ site_bp = Blueprint('site_bp', __name__)
 # ** Search Routes ** #
 # ******************* #
 
+# All logged in users can use search
 @site_bp.route("/search/rooms", methods=['GET','POST'])
+@login_required
 def room_search():
     form = RoomSearchForm()
     if request.method == 'POST':
@@ -29,6 +32,7 @@ def room_search():
     return render_template('room_search.html', form=form)
 
 @site_bp.route("/search/rooms/results")
+@login_required
 def room_results():
     search_category = request.args.get('search_category')
     # Load the search string wrapped in '%' for the ilike command
@@ -59,19 +63,28 @@ def room_results():
 
 # View all clients
 @site_bp.route("/client")
+@login_required
 def client_list():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     clients = Client.query.all()
     return render_template('client_list.html', title="Client List", clients=clients)
 
 # View all sites
 @site_bp.route("/site")
+@login_required
 def site_list():
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     sites = Site.query.all()
     return render_template('site_list.html', title='Site List', sites=sites)
 
 # Display all Areas in the chosen site
 @site_bp.route("/site/<int:cur_site_id>")
+@login_required
 def site_area_list(cur_site_id):
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id) # get current site from the site_id in url
     areas = Area.query.filter_by(site_id=site.id).order_by(Area.name).all()
     
@@ -101,7 +114,10 @@ def site_area_list(cur_site_id):
 
 # View all Rooms in the chosen Area
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>")
+@login_required
 def area_room_list(cur_site_id, cur_area_id):
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id) # get current site from the site_id in url
     area = Area.query.get_or_404(cur_area_id) # get current area from the area_id in url
     rooms = Room.query.filter_by(area_id=area.id).all()
@@ -116,6 +132,8 @@ def area_room_list(cur_site_id, cur_area_id):
 @site_bp.route("/client/<int:cur_client_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_client(cur_client_id):
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
     form = UpdateClientForm()
     client = Client.query.get_or_404(cur_client_id)
 
@@ -140,6 +158,8 @@ def update_client(cur_client_id):
 @site_bp.route("/rooms/<int:cur_room_id>")
 @login_required
 def room_update(cur_room_id):
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     # We don't really need the site or area for this...
     room = Room.query.get_or_404(cur_room_id) # get the room for editting
 
@@ -180,6 +200,8 @@ def room_update(cur_room_id):
 @site_bp.route("/site/<int:cur_site_id>/<int:cur_area_id>/update", methods=['GET', 'POST'])
 @login_required
 def area_update(cur_site_id, cur_area_id):
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id) # Get current site_id from URL
     area = Area.query.get_or_404(cur_area_id) # Get current area_id
     form = UpdateAreaForm()
@@ -229,7 +251,10 @@ def area_update(cur_site_id, cur_area_id):
 
 # Display list of rooms in a site where date_next_paint <=1 year from today
 @site_bp.route("/site/<int:cur_site_id>/upcoming")
+@login_required
 def upcoming(cur_site_id):
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id)
     site_id = site.id
     name = site.name
@@ -246,7 +271,10 @@ def upcoming(cur_site_id):
 
 # Display list of rooms in a site where freq = -1 or "as needed"
 @site_bp.route("/site/<int:cur_site_id>/as_needed")
+@login_required
 def as_needed(cur_site_id):
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id)
     site_id = site.id
     name = site.name
@@ -266,7 +294,10 @@ def as_needed(cur_site_id):
 
 # Add new Client
 @site_bp.route("/client/new", methods=['GET', 'POST'])
+@login_required
 def new_client():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     form = NewClientForm()
     if form.validate_on_submit():
         client = Client(name=form.name.data, contactName=form.contactName.data, contactEmail=form.contactEmail.data, contactPhone=form.contactPhone.data)
@@ -279,7 +310,10 @@ def new_client():
 
 # Add new site
 @site_bp.route("/site/new", methods=['GET', 'POST'])
+@login_required
 def new_site():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     form = NewSiteForm()
     if form.validate_on_submit():
         site = Site(name=form.name.data, code=form.code.data, addr_str=form.addr_str.data, city=form.city.data)
@@ -292,7 +326,10 @@ def new_site():
 
 # Add a new Area
 @site_bp.route("/newArea", methods=['GET', 'POST'])
+@login_required
 def new_area():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     form = NewAreaForm()
     if form.validate_on_submit():
         area = Area(name=form.name.data, code=form.code.data, site_id=form.site_id.data.id, building=form.building.data, level=form.level.data, descriptor=form.descriptor.data)
@@ -304,7 +341,10 @@ def new_area():
 
 # Add new Area to the chosen Site
 @site_bp.route("/site/<int:cur_site_id>/new", methods=['GET', 'POST'])
+@login_required
 def add_area(cur_site_id):
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     site = Site.query.get_or_404(cur_site_id)
     form = NewAreaForm()
     if form.validate_on_submit():
@@ -322,7 +362,10 @@ def add_area(cur_site_id):
 
 # Add a new Room
 @site_bp.route("/newRoom", methods=['GET', 'POST'])
+@login_required
 def new_room():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     form = RoomForm()
     if form.validate_on_submit():
         room = Room(bm_id=form.bm_id.data, 
@@ -344,7 +387,10 @@ def new_room():
 # *** JSON Routes *** #
 # ******************* #
 @site_bp.route("/getareas/<site_id>")
+@login_required
 def areasJson(site_id):
+    if not roleAuth('Client'):
+        return redirect(url_for('main_bp.home'))
     # Get all brands for the given supplier
     areas = Area.query.filter_by(site_id=site_id).all()
     # Create an empty list
