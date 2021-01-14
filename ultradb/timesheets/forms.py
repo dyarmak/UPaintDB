@@ -16,10 +16,9 @@ class TimesheetDateRangeForm(FlaskForm):
 
 class TimesheetForm(FlaskForm):
     date_of_work = DateField('Date of work. Format in YYYY/MM/DD', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.utcnow())
-    project_id = QuerySelectField('Select Project you worked on', query_factory=project_query, get_label='name')
+    project_id = QuerySelectField('Select Project you worked on', query_factory=project_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     hours = FloatField('Hours worked today on selected project')
     comment = StringField('What work did you do')
-    completed = BooleanField('All hour for this day?', default=False)
     update = SubmitField('Update Timesheet Details')
     submit = SubmitField('Add Hours to this Project')
 

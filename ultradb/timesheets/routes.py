@@ -134,15 +134,13 @@ def add_timesheet():
             
 
     if form.validate_on_submit():
-        completed = form.completed.data 
-        # completed = False # WAS the default value for a new entry.
         curUser = User.query.get(current_user.id)
         proj = Project.query.get(form.project_id.data.id)
             
         newTimesheet = Timesheet(date_submit=datetime.utcnow(), 
                                 date_of_work=form.date_of_work.data, project_id=form.project_id.data.id, 
                                 hours=form.hours.data, comment=form.comment.data,
-                                user_id=curUser.id, completed=completed)
+                                user_id=curUser.id)
         db.session.add(newTimesheet)
 
         # Add to project_timesheet table
@@ -152,10 +150,7 @@ def add_timesheet():
         db.session.commit()
         flash('Time Entered Successfully!', 'success')
 
-        if (completed == False):
-            return redirect(url_for('timesheet_bp.add_timesheet'))
-        else:
-            return redirect(url_for('timesheet_bp.view_timesheet'))
+        return redirect(url_for('timesheet_bp.add_timesheet'))
 
     return render_template('timesheet_add.html', title='Enter Your Time', legend='Enter Your Time', tss=prevts, dateLastEntry=dateLastEntry, form=form, user=user)
 

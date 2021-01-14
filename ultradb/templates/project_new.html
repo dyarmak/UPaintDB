@@ -6,7 +6,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">{{ legend }}</legend>
             <div class="form-group">
-                {{ form.client_id.label(class="form-control-label") }}
+                {{ form.client_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.client_id.errors %}
                     {{ form.client_id(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -19,7 +19,7 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                    {{ form.site_id.label(class="form-control-label") }}
+                    {{ form.site_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                     {% if form.site_id.errors %}
                         {{ form.site_id(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -33,7 +33,7 @@
                 </div>
 
             <div class="form-group">
-                {{ form.name.label(class="form-control-label") }}
+                {{ form.name.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.name.errors %}
                     {{ form.name(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.status_id.label(class="form-control-label") }}
+                {{ form.status_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.status_id.errors %}
                     {{ form.status_id(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.typeOfWork_id.label(class="form-control-label") }}
+                {{ form.typeOfWork_id.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.typeOfWork_id.errors %}
                     {{ form.typeOfWork_id(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -89,7 +89,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.date_start.label(class="form-control-label") }}
+                {{ form.date_start.label(class="form-control-label") }}<span class="requiredField"><sup>&starf;</sup></span>
                 {% if form.date_start.errors %}
                     {{ form.date_start(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
@@ -171,7 +171,7 @@
                     {{ form.extenuating_circumstances(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-
+            <span class="requiredField"><sup>&starf;</sup></span> required
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
