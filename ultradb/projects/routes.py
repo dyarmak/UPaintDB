@@ -272,7 +272,7 @@ def update_project(cur_proj_id):
         # commit changes
         db.session.commit()
         flash('Project Updated Successfully!', 'success')
-        return redirect(url_for('project_bp.projects'))  
+        return redirect(url_for('project_bp.project_list'))  
     elif request.method == 'GET':
         form.name.data = proj.name
         form.client_id.data = Client.query.get(proj.client_id)
