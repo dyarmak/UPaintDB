@@ -23,6 +23,8 @@ project_bp = Blueprint('project_bp', __name__)
 @project_bp.route("/projects", methods=['GET', 'POST'])
 @login_required
 def project_list():
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
 
     # Create the filter form object.
     filt = FilterProjectsForm()
@@ -88,6 +90,9 @@ def clientProjects():
     This route returns a JSON obj of the specific project data 
     for projects that fit the filter criteria.
     """
+    # This needs to be set the same as the project_list
+    if not roleAuth('Manager'):
+        return redirect(url_for('main_bp.home'))
     # Grab the ?params from the URL, default None if missing
     cl_id = request.args.get('cl_id', None)
     si_id = request.args.get('si_id', None)
@@ -179,7 +184,7 @@ def new_project():
 @project_bp.route("/projects/<int:cur_proj_id>")
 @login_required
 def view_project(cur_proj_id):
-    # Must be employee
+    # Must be employee or higher
     if not roleAuth('Employee'):
         return redirect(url_for('main_bp.home'))
 
