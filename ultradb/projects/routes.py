@@ -132,7 +132,8 @@ def new_project_simple():
         project = Project(name= form.name.data,
                           client_id=form.client_id.data.id,
                           site_id=form.site_id.data.id, 
-                          status_id=form.status_id.data.id, 
+                          # default status to inprogress 
+                          status_id=3,
                           typeOfWork_id=form.typeOfWork_id.data.id, 
                           description=form.description.data, 
                           date_start=form.date_start.data, 
@@ -271,7 +272,7 @@ def update_project(cur_proj_id):
         # commit changes
         db.session.commit()
         flash('Project Updated Successfully!', 'success')
-        return redirect(url_for('main_bp.home'))  
+        return redirect(url_for('project_bp.projects'))  
     elif request.method == 'GET':
         form.name.data = proj.name
         form.client_id.data = Client.query.get(proj.client_id)

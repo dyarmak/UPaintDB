@@ -8,8 +8,11 @@ from ultradb.models import Site, Area, Room, Status, Worktype, Client
 def client_query():
     return Client.query
 
+def new_proj_status_query():
+    return Status.query.filter(Status.id.in_([1,3]))
+
 def status_query():
-    return Status.query
+    return Status.query.filter(Status.id.in_([1,3,4,5,6,7]))
 
 def type_query():
     return Worktype.query
@@ -38,7 +41,6 @@ class NewProjectSimpleForm(FlaskForm):
     name = StringField('Project Name', validators=[DataRequired()])
     client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     site_id = QuerySelectField('Site of Project', query_factory=site_query, allow_blank=True, get_label='code', validators=[DataRequired()])
-    status_id = QuerySelectField('Project Status', query_factory=status_query, allow_blank=False, get_label='name', validators=[DataRequired()])
     typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name', validators=[DataRequired()])
     description = StringField('Description of the Job / Scope', validators=[Length(max=250)])
     # Dates should have some validators added!
@@ -52,7 +54,7 @@ class NewProjectForm(FlaskForm):
     name = StringField('Project Name', validators=[DataRequired()])
     client_id = QuerySelectField('Client', query_factory=client_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     site_id = QuerySelectField('Site of Project', query_factory=site_query, allow_blank=True, get_label='code', validators=[DataRequired()])
-    status_id = QuerySelectField('Project Status', query_factory=status_query, allow_blank=False, get_label='name', validators=[DataRequired()])
+    status_id = QuerySelectField('Project Status', query_factory=new_proj_status_query, allow_blank=False, get_label='name', validators=[DataRequired()])
     typeOfWork_id = QuerySelectField('Type of Work',query_factory=type_query, allow_blank=False, get_label='name', validators=[DataRequired()])
     description = StringField('Description of the Job / Scope', validators=[Length(max=250)])
     # Dates should have some validators added!
