@@ -47,20 +47,6 @@
             </div>
 
             <div class="form-group">
-                {{ form.status_id.label(class="form-control-label") }}
-                {% if form.status_id.errors %}
-                    {{ form.status_id(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.status_id.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.status_id(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-            <div class="form-group">
                 {{ form.typeOfWork_id.label(class="form-control-label") }}
                 {% if form.typeOfWork_id.errors %}
                     {{ form.typeOfWork_id(class="form-control form-control-lg is-invalid") }}
@@ -129,7 +115,7 @@
                     {{ form.extenuating_circumstances(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-
+            <span class="requiredField"><sup>&starf;</sup></span> required
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
