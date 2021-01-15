@@ -4,10 +4,14 @@ from wtforms import StringField, SubmitField, BooleanField, FloatField
 from wtforms.fields.html5 import DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError
-from ultradb.models import Project
+from ultradb.models import Project, User
 
 def project_query():
     return Project.query
+
+# This should only show active employees...
+def user_query():
+    return User.query.filter(User.isEmployed == True)
 
 class TimesheetDateRangeForm(FlaskForm):
     startDate = DateField('Start Date', validators=[DataRequired()], format='%Y-%m-%d')
@@ -15,6 +19,7 @@ class TimesheetDateRangeForm(FlaskForm):
     submit = SubmitField('Filter timesheets to date range')
 
 class TimesheetForm(FlaskForm):
+    user_id = QuerySelectField('Employee Name', query_factory=user_query, allow_blank=True, get_label='username')
     date_of_work = DateField('Date of work. Format in YYYY/MM/DD', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.utcnow())
     project_id = QuerySelectField('Select Project you worked on', query_factory=project_query, allow_blank=True, get_label='name', validators=[DataRequired()])
     hours = FloatField('Hours worked today on selected project')

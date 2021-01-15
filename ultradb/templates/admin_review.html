@@ -4,7 +4,11 @@
 {% endblock filter %}
 
 {% block content %}
+<h1>Admin Timesheet Review</h1>
+<p>Here you can review/ approve employee timesheet entries, as well as add, edit, and delete them</p>
 
+<h4><a href="{{ url_for('admin_bp.admin_create_ts_entry') }}">Add new Employee timesheet entry</a></h4>
+<H4>Existing Timesheet Entries</H4>
 <table>
     <tr>
         <th>Date Of Work</th>
@@ -13,7 +17,8 @@
         <th>Project Name</th>
         <th>Employee Comment</th>
         <th>Approved?</th>
-        <th>Edit entry</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
     {% for ts in tss %}
         {% if ts.hours >0 %}
@@ -29,7 +34,27 @@
                 <td><a href="{{ url_for('admin_bp.admin_approve', ts_id=ts.id) }}"><div class="btn btn-success">Approve</div></a></td>
             {% endif %}
             <td><a href="{{ url_for('admin_bp.admin_timesheet_update', ts_id=ts.id) }}"><div class="btn btn-info">Edit</div></a></td>
+            <td><button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button></td>
         </tr>
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel">Delete Timesheet Entry?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <form action="{{ url_for('admin_bp.delete_ts_entry', ts_id=ts.id) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
         {% endif %}
     {% endfor %}
 </table>

@@ -28,7 +28,54 @@ def admin_payroll_review():
 
     return render_template("admin_payroll_review.html", title="Admin", sub1=sub1, msg1=msg1, sub2=sub2, msg2=msg2)
 
+# Admin create a new timesheet entry.
+@admin_bp.route("/admin/review/add", methods=['GET','POST'])
+@login_required
+def admin_create_ts_entry():
+    # Must be Admin
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
+    
+    form=TimesheetForm()
+    
+    if form.validate_on_submit():
+        employee = User.query.get(form.user_id.data.id)
+        proj = Project.query.get(form.project_id.data.id)
+        
+        ts = Timesheet(date_submit=datetime.utcnow(), 
+                       user_id= employee.id,
+                       date_of_work = form.date_of_work.data, 
+                       project_id = form.project_id.data.id,
+                       hours = form.hours.data,
+                       comment = form.comment.data)
+        db.session.add(ts)
 
+        # Add to project_timesheet table
+        proj.timesheets.append(ts)
+        # Add to UserTimesheet table
+        ts.user.append(employee)
+        db.session.commit()
+
+        msg = f'Timesheet entry created successfully'
+        flash(msg, 'success')
+        return redirect(url_for('admin_bp.admin_review'))
+
+    return render_template("admin_create_TS.html", form=form)
+
+# Admin a Timesheet Delete
+@admin_bp.route("/admin/review/delete/<int:ts_id>", methods=['POST'])
+@login_required
+def delete_ts_entry(ts_id):
+    # Must be Admin
+    if not roleAuth('Admin'):
+        return redirect(url_for('main_bp.home'))
+    
+    ts = Timesheet.query.get_or_404(ts_id)
+
+    db.session.delete(ts)
+    db.session.commit()
+    flash('The timesheet entry has been deleted!', 'success')
+    return redirect(url_for('admin_bp.admin_review'))
 
 # Admin Timesheet Edit
 @admin_bp.route("/admin/review/update/<int:ts_id>", methods=['GET', 'POST'])
