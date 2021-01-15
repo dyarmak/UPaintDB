@@ -144,7 +144,7 @@ def admin_review():
     # Review / Approve / Edit Employee Time Entries
     
     # We want to get those timesheets within the last month / 30 days.
-    numDays = 90 # using 90 because we don't have anything more recent. 
+    numDays = 30 # using 90 because we don't have anything more recent. 
     startDate = datetime.now().date()
     endDate = startDate-timedelta(days=numDays)
 
