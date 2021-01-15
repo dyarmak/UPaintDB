@@ -22,6 +22,7 @@
     </tr>
     {% for ts in tss %}
         {% if ts.hours >0 %}
+
         <tr>
             <td>{{ ts.date_of_work.strftime('%a, %B %d, %Y') }}</td>
             <td>{{ ts.user.first().fName }}</td>
@@ -34,29 +35,31 @@
                 <td><a href="{{ url_for('admin_bp.admin_approve', ts_id=ts.id) }}"><div class="btn btn-success">Approve</div></a></td>
             {% endif %}
             <td><a href="{{ url_for('admin_bp.admin_timesheet_update', ts_id=ts.id) }}"><div class="btn btn-info">Edit</div></a></td>
-            <td><button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button></td>
-        </tr>
-        <!-- Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="deleteModalLabel">Delete Timesheet Entry?</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <form action="{{ url_for('admin_bp.delete_ts_entry', ts_id=ts.id) }}" method="POST">
-                    <input class="btn btn-danger" type="submit" value="Delete">
-                  </form>
-                </div>
-              </div>
-            </div>
-        </div>
+            <td><button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{ ts.id }}">Delete</button></td>
+          </tr>
         {% endif %}
-    {% endfor %}
+    {% endfor %}   
 </table>
+{% for ts in tss %}
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{ ts.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Timesheet Entry?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form action="{{ url_for('admin_bp.delete_ts_entry', ts_id=ts.id) }}" method="POST">
+          <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 {% endblock content %}

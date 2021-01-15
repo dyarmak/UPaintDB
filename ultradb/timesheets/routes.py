@@ -48,7 +48,7 @@ def employee_hours_submit(weekno):
 
 
 # Delete a Timesheet Entry
-@timesheet_bp.route("/timesheet/<int:ts_id>/delete", methods=['POST'])
+@timesheet_bp.route("/timesheet/delete/<int:ts_id>", methods=['POST'])
 @login_required
 def delete_ts_entry(ts_id):
     ts = Timesheet.query.get_or_404(ts_id)
@@ -140,7 +140,7 @@ def add_timesheet():
         newTimesheet = Timesheet(date_submit=datetime.utcnow(), 
                                 date_of_work=form.date_of_work.data, project_id=form.project_id.data.id, 
                                 hours=form.hours.data, comment=form.comment.data,
-                                user_id=curUser.id)
+                                user_id=curUser.id, completed=False)
         db.session.add(newTimesheet)
 
         # Add to project_timesheet table
