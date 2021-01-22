@@ -179,7 +179,6 @@ def room_update(cur_room_id):
         room.freq = form.freq.data
         room.site_id = form.site_id.data.id
         room.area_id = form.area_id.data.id
-        room.glaccount = form.glaccount.data
         db.session.commit()
         flash('The Room has been updated!', 'success')
         return redirect(url_for('site_bp.area_room_list', cur_site_id=site_id, cur_area_id=area_id))
@@ -192,7 +191,6 @@ def room_update(cur_room_id):
         form.area_id.data = Area.query.get(room.area_id)
         form.freq.data = room.freq
         form.date_last_paint.data = room.date_last_paint
-        form.glaccount.data = room.glaccount
     return render_template('room_update.html', title='Update Room',  legend='Update Room Info',room=room, form=form)
 
 
@@ -375,8 +373,7 @@ def new_room():
                     date_last_paint=form.date_last_paint.data,
                     freq=form.freq.data,
                     site_id=form.site_id.data.id,
-                    area_id=form.area_id.data.id,
-                    glaccount=form.glaccount.data)
+                    area_id=form.area_id.data.id)
         db.session.add(room)
         db.session.commit()
         flash('New Room Added Successfully!', 'success')

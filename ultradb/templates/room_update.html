@@ -113,19 +113,7 @@
                     {{ form.freq(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-            <div class="form-group">
-                {{ form.glaccount.label(class="form-control-label") }}
-                {% if form.glaccount.errors %}
-                    {{ form.glaccount(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.glaccount.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.glaccount(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
+            
             <span class="requiredField"><sup>&starf;</sup></span> required
         </fieldset>
         <div class="form-group">

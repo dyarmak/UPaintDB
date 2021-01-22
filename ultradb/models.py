@@ -236,7 +236,6 @@ class Room(db.Model):
     # A room is in 1 Area
     area_id = db.Column(db.Integer, db.ForeignKey('area.id'),
                           nullable=False)
-    glaccount = db.Column(db.String(50))
 
     def __repr__(self):
         return f"Room('{self.bm_id}', '{self.name}', '{self.site_id},' '{self.area_id}')"

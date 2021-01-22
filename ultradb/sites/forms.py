@@ -84,5 +84,4 @@ class RoomForm(FlaskForm):
     site_id = QuerySelectField('Site', query_factory=site_query, allow_blank=True)
     area_id = QuerySelectField('Area', query_factory=area_query, allow_blank=True)
     # We don't want to allow changes to the orig_paint_date
-    glaccount = StringField('GL Account if available')
     submit = SubmitField('Add or Update Room')
