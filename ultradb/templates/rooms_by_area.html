@@ -22,6 +22,8 @@
               {% for prj in prjs %}
                 {% if prj.date_finished is not none %}
                   <p>Painted on {{ prj.date_finished.strftime('%Y-%m-%d') }} as part of '{{ prj.name }}'</p>
+                {% else %}
+                  Part of an in Progress Project
                 {% endif %}
               {% endfor %}
             {% endif %}
