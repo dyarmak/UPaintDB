@@ -20,7 +20,9 @@
               {% set prjs = room.projects.all() %}
               <H5>Painting History:</H5>
               {% for prj in prjs %}
-                <p>Painted on {{ prj.date_finished.strftime('%Y-%m-%d') }} as part of '{{ prj.name }}'</p>
+                {% if prj.date_finished is not none %}
+                  <p>Painted on {{ prj.date_finished.strftime('%Y-%m-%d') }} as part of '{{ prj.name }}'</p>
+                {% endif %}
               {% endfor %}
             {% endif %}
             <p>Next Painting due: 
